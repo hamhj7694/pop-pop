@@ -45,3 +45,11 @@
 - 변경 파일: `.gitignore`, `package.json`, `package-lock.json`, `index.html`, `vite.config.ts`, `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`, `tailwind.config.ts`, `postcss.config.js`, `eslint.config.js`, `src/main.tsx`, `src/app/App.tsx`, `src/styles/index.css`, `src/domains/**`, `src/shared/**`, `TODO.md`
 - 검증: `npm.cmd install`, `npm.cmd run lint`, `npm.cmd run build`, `npm.cmd run dev -- --host 127.0.0.1`
 - 비고: 샌드박스의 상위 디렉터리 읽기 제한 때문에 Vite build/dev는 승인 환경에서 검증했다. dev server는 `http://127.0.0.1:5173/`로 기동 확인 후 종료했다.
+
+### Phase 1 반응형 버블 보드와 터뜨리기 입력
+
+- Phase: Phase 1. 핵심 손맛 구현
+- 관련 TODO: 반응형 버블 배치 알고리즘 구현, 버블 상태 모델 구현, 클릭/터치 터뜨리기 구현, 마우스 드래그 연속 터뜨리기 구현, 모바일 터치 드래그 연속 터뜨리기 구현, 이미 터진 버블 중복 처리 방지, 기본 눌림/터짐 애니메이션 구현, 남은 버블 수 기준 새 판 생성 구현
+- 변경 파일: `src/app/App.tsx`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `src/domains/bubble/**`, `src/shared/hooks/useElementSize.ts`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`, `npm.cmd run dev -- --host 127.0.0.1`
+- 비고: 파티클 구현과 데스크톱/모바일 실제 화면 크기별 수동 검증은 남은 Phase 1 작업으로 유지한다. dev server는 `http://127.0.0.1:5173/`로 기동 확인 후 종료했다.
