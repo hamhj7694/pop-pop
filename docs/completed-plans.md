@@ -69,3 +69,11 @@
 - 변경 파일: `src/shared/audio/**`, `src/shared/haptics/**`, `src/domains/settings/**`, `src/features/settings/SettingsPanel.tsx`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`, `npm.cmd run dev -- --host 127.0.0.1`
 - 비고: 기본 pop 사운드는 런타임 생성 WAV data URI를 Howler로 재생한다. 사운드는 34ms 최소 간격으로 제한했고, 설정은 `toktok-settings` localStorage 키로 저장한다. dev server는 `http://127.0.0.1:5173/`로 기동 확인 후 종료했다.
+
+### Phase 3 보상 루프 구현
+
+- Phase: Phase 3. 보상 루프 구현
+- 관련 TODO: 보상 타입과 희귀도 타입 구현, 샘플 보상 데이터 작성, 랜덤 보상 확률 엔진 구현, 콤보/피버 확률 modifier 구조 준비, 터진 위치 기준 보상 드랍 연출 구현, 화면 하단 쌓임 연출 구현, `오늘 주운 것들 N개` 하단 고정 버튼 구현, 오늘 주운 것들 오버레이 구현, 희귀도별 필터 구현, 새로 얻은 보상 강조 구현, 보상 상세 보기 구현
+- 변경 파일: `src/domains/reward/**`, `src/features/reward/**`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`, `npm.cmd run dev -- --host 127.0.0.1`
+- 비고: 보상은 즉시 팝업으로 띄우지 않고 터진 위치에서 하단으로 떨어지는 연출을 사용한다. `도감에 저장` 버튼은 상세 보기 안에 배치했으며 실제 장기 저장은 Phase 4에서 연결한다. dev server는 `http://127.0.0.1:5173/`로 기동 확인 후 종료했다.

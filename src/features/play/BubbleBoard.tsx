@@ -4,9 +4,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { BUBBLE_GAP } from '../../domains/bubble/bubble.constants';
 import { useBubbleStore } from '../../domains/bubble/bubble.store';
 import { calculateBubbleLayout } from '../../domains/bubble/bubble.utils';
+import { useRewardStore } from '../../domains/reward/reward.store';
 import { useSettingsStore } from '../../domains/settings/settings.store';
 import { playBubblePopSound } from '../../shared/audio/audio.service';
-import { vibrateBubblePop } from '../../shared/haptics/haptics.service';
+import {
+  vibrateBubblePop,
+  vibrateRareReward,
+  vibrateSuperRareReward,
+} from '../../shared/haptics/haptics.service';
 import { useElementSize } from '../../shared/hooks/useElementSize';
 
 interface PopBurst {
@@ -41,6 +46,7 @@ export function BubbleBoard() {
   const poppedCount = useBubbleStore((state) => state.poppedCount);
   const initializeBoard = useBubbleStore((state) => state.initializeBoard);
   const popBubble = useBubbleStore((state) => state.popBubble);
+  const tryRewardDrop = useRewardStore((state) => state.tryRewardDrop);
   const soundEnabled = useSettingsStore((state) => state.soundEnabled);
   const vibrationEnabled = useSettingsStore((state) => state.vibrationEnabled);
   const volume = useSettingsStore((state) => state.volume);
@@ -116,14 +122,37 @@ export function BubbleBoard() {
         playBubblePopSound(volume);
       }
 
-      if (vibrationEnabled) {
-        vibrateBubblePop();
-      }
-
       spawnBurst(bubbleElement);
       popBubble(bubbleId);
+
+      const bubbleRect = bubbleElement.getBoundingClientRect();
+      const rewardDrop = tryRewardDrop({
+        x: bubbleRect.left + bubbleRect.width / 2,
+        y: bubbleRect.top + bubbleRect.height / 2,
+        modifiers: {
+          comboMultiplier: 1,
+          feverMultiplier: 1,
+        },
+      });
+
+      if (vibrationEnabled) {
+        if (rewardDrop?.reward.rarity === 'super_rare') {
+          vibrateSuperRareReward();
+        } else if (rewardDrop?.reward.rarity === 'rare') {
+          vibrateRareReward();
+        } else {
+          vibrateBubblePop();
+        }
+      }
     },
-    [popBubble, soundEnabled, spawnBurst, vibrationEnabled, volume],
+    [
+      popBubble,
+      soundEnabled,
+      spawnBurst,
+      tryRewardDrop,
+      vibrationEnabled,
+      volume,
+    ],
   );
 
   const handlePointerDown = (bubbleId: string, bubbleElement: HTMLElement) => {

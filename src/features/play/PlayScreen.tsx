@@ -3,10 +3,14 @@ import { BubbleBoard } from './BubbleBoard';
 import { useBubbleStore } from '../../domains/bubble/bubble.store';
 import { REWARD_RARITIES } from '../../domains/reward/reward.constants';
 import { useSettingsStore } from '../../domains/settings/settings.store';
+import { RewardDropLayer } from '../reward/RewardDropLayer';
+import { TodayFindsButton } from '../reward/TodayFindsButton';
+import { TodayFindsOverlay } from '../reward/TodayFindsOverlay';
 import { SettingsPanel } from '../settings/SettingsPanel';
 
 export function PlayScreen() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isTodayFindsOpen, setIsTodayFindsOpen] = useState(false);
   const poppedCount = useBubbleStore((state) => state.poppedCount);
   const soundEnabled = useSettingsStore((state) => state.soundEnabled);
   const vibrationEnabled = useSettingsStore((state) => state.vibrationEnabled);
@@ -42,6 +46,7 @@ export function PlayScreen() {
           isOpen={isSettingsOpen}
           onClose={() => setIsSettingsOpen(false)}
         />
+        <RewardDropLayer />
 
         <BubbleBoard />
 
@@ -52,10 +57,13 @@ export function PlayScreen() {
           <div className="rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm">
             Popped {poppedCount}
           </div>
-          <button className="h-11 rounded-md bg-ink px-4 text-sm font-bold text-white shadow-sm">
-            오늘 주운 것들 0개
-          </button>
+          <TodayFindsButton onClick={() => setIsTodayFindsOpen(true)} />
         </footer>
+
+        <TodayFindsOverlay
+          isOpen={isTodayFindsOpen}
+          onClose={() => setIsTodayFindsOpen(false)}
+        />
 
         <aside className="sr-only">
           현재 설정: 사운드 {soundEnabled ? 'ON' : 'OFF'}, 진동{' '}
