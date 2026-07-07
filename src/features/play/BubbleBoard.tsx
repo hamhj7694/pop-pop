@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { BUBBLE_GAP } from '../../domains/bubble/bubble.constants';
 import { useBubbleStore } from '../../domains/bubble/bubble.store';
 import { calculateBubbleLayout } from '../../domains/bubble/bubble.utils';
+import { getComboRewardMultiplier } from '../../domains/combo/combo.constants';
 import { useComboStore } from '../../domains/combo/combo.store';
 import { useRewardStore } from '../../domains/reward/reward.store';
 import { useSettingsStore } from '../../domains/settings/settings.store';
@@ -133,7 +134,7 @@ export function BubbleBoard() {
         x: bubbleRect.left + bubbleRect.width / 2,
         y: bubbleRect.top + bubbleRect.height / 2,
         modifiers: {
-          comboMultiplier: nextCombo >= 100 ? 1.25 : 1,
+          comboMultiplier: getComboRewardMultiplier(nextCombo),
           feverMultiplier: 1,
         },
       });

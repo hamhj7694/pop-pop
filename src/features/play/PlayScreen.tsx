@@ -4,6 +4,7 @@ import { useBubbleStore } from '../../domains/bubble/bubble.store';
 import { useComboStore } from '../../domains/combo/combo.store';
 import { REWARD_RARITIES } from '../../domains/reward/reward.constants';
 import { useSettingsStore } from '../../domains/settings/settings.store';
+import { ComboFeedback } from '../combo/ComboFeedback';
 import { RewardDropLayer } from '../reward/RewardDropLayer';
 import { TodayFindsButton } from '../reward/TodayFindsButton';
 import { TodayFindsOverlay } from '../reward/TodayFindsOverlay';
@@ -30,9 +31,11 @@ export function PlayScreen() {
           <div className="flex gap-2">
             <button
               type="button"
-              className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold shadow-sm"
+              className="h-10 rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-400 shadow-sm"
+              disabled
+              title="도감은 장기 수집 기능에서 준비할 예정입니다."
             >
-              도감
+              도감 준비 중
             </button>
             <button
               type="button"
@@ -50,6 +53,7 @@ export function PlayScreen() {
           onClose={() => setIsSettingsOpen(false)}
         />
         <RewardDropLayer />
+        <ComboFeedback />
 
         <BubbleBoard />
 
@@ -61,7 +65,7 @@ export function PlayScreen() {
             Best {maxCombo}
           </div>
           <div className="rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm">
-            Popped {poppedCount}
+            Session {poppedCount}
           </div>
           <TodayFindsButton onClick={() => setIsTodayFindsOpen(true)} />
         </footer>

@@ -109,3 +109,11 @@
 - 변경 파일: `src/domains/reward/**`, `src/features/reward/**`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`, `npm.cmd run dev -- --host 127.0.0.1`
 - 비고: 보상은 즉시 팝업으로 띄우지 않고 터진 위치에서 하단으로 떨어지는 연출을 사용한다. `도감에 저장` 버튼은 상세 보기 안에 배치했으며 실제 장기 저장은 Phase 4에서 연결한다. dev server는 `http://127.0.0.1:5173/`로 기동 확인 후 종료했다.
+
+### 플레이 루프 안정화와 콤보 피드백 정리
+
+- Phase: Phase 4/5 전 안정화
+- 관련 TODO: 콤보 단계 감지 구현, 콤보 보상 modifier 구현, 콤보 종료 결과 표시 구현
+- 변경 파일: `src/domains/combo/**`, `src/features/combo/ComboFeedback.tsx`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 도감 버튼은 Phase 4 전까지 `도감 준비 중`으로 비활성화했다. `Popped` 표기는 세션 누적 의미가 드러나도록 `Session`으로 변경했다. 콤보 milestone, 보상 확률 multiplier, 기록 달성 피드백을 추가했다.
