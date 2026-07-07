@@ -78,6 +78,14 @@
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 오버레이 높이를 고정하고 헤더/필터와 콘텐츠 영역을 분리했다. 데스크톱에서는 리스트만 스크롤되고 상세 패널은 오른쪽에 유지되며, 모바일에서는 목록/상세 전환 구조로 상세가 긴 목록 아래로 밀려 보이지 않는 문제를 줄였다.
 
+### Popped 유지와 기본 콤보 카운트 구현
+
+- Phase: Phase 1/5 조정
+- 관련 TODO: 터진 버블 자동 재생성 구현, 콤보 카운트 구현, 콤보 종료 타이머 구현
+- 변경 파일: `src/domains/bubble/bubble.store.ts`, `src/domains/combo/**`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 보드 레이아웃 재초기화는 최초 생성 이후 실행하지 않도록 변경했다. Combo는 터뜨릴 때 증가하고 입력이 1.2초 없으면 종료되도록 기본 동작을 연결했다.
+
 ### Phase 1 기본 파티클 구현
 
 - Phase: Phase 1. 핵심 손맛 구현

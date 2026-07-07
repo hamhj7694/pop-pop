@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BubbleBoard } from './BubbleBoard';
 import { useBubbleStore } from '../../domains/bubble/bubble.store';
+import { useComboStore } from '../../domains/combo/combo.store';
 import { REWARD_RARITIES } from '../../domains/reward/reward.constants';
 import { useSettingsStore } from '../../domains/settings/settings.store';
 import { RewardDropLayer } from '../reward/RewardDropLayer';
@@ -12,6 +13,8 @@ export function PlayScreen() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isTodayFindsOpen, setIsTodayFindsOpen] = useState(false);
   const poppedCount = useBubbleStore((state) => state.poppedCount);
+  const currentCombo = useComboStore((state) => state.currentCombo);
+  const maxCombo = useComboStore((state) => state.maxCombo);
   const soundEnabled = useSettingsStore((state) => state.soundEnabled);
   const vibrationEnabled = useSettingsStore((state) => state.vibrationEnabled);
   const effectIntensity = useSettingsStore((state) => state.effectIntensity);
@@ -52,7 +55,10 @@ export function PlayScreen() {
 
         <footer className="mt-4 flex items-center justify-between gap-3">
           <div className="rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm">
-            Combo 0
+            Combo {currentCombo}
+          </div>
+          <div className="hidden rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm sm:block">
+            Best {maxCombo}
           </div>
           <div className="rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm">
             Popped {poppedCount}

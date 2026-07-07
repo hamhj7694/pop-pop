@@ -20,7 +20,7 @@ export const useBubbleStore = create<BubbleState>((set, get) => ({
   initializeBoard: (count) => {
     const { bubbles } = get();
 
-    if (bubbles.length === count && bubbles.length > 0) {
+    if (bubbles.length > 0) {
       return;
     }
 
@@ -30,7 +30,7 @@ export const useBubbleStore = create<BubbleState>((set, get) => ({
       return {
         boardVersion: nextVersion,
         bubbles: createBubbles(count, nextVersion),
-        poppedCount: 0,
+        poppedCount: state.poppedCount,
       };
     });
   },

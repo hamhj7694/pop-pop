@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { BUBBLE_GAP } from '../../domains/bubble/bubble.constants';
 import { useBubbleStore } from '../../domains/bubble/bubble.store';
 import { calculateBubbleLayout } from '../../domains/bubble/bubble.utils';
+import { useComboStore } from '../../domains/combo/combo.store';
 import { useRewardStore } from '../../domains/reward/reward.store';
 import { useSettingsStore } from '../../domains/settings/settings.store';
 import { playBubblePopSound } from '../../shared/audio/audio.service';
@@ -46,6 +47,7 @@ export function BubbleBoard() {
   const poppedCount = useBubbleStore((state) => state.poppedCount);
   const initializeBoard = useBubbleStore((state) => state.initializeBoard);
   const popBubble = useBubbleStore((state) => state.popBubble);
+  const incrementCombo = useComboStore((state) => state.incrementCombo);
   const tryRewardDrop = useRewardStore((state) => state.tryRewardDrop);
   const soundEnabled = useSettingsStore((state) => state.soundEnabled);
   const vibrationEnabled = useSettingsStore((state) => state.vibrationEnabled);
@@ -124,13 +126,14 @@ export function BubbleBoard() {
 
       spawnBurst(bubbleElement);
       popBubble(bubbleId);
+      const nextCombo = incrementCombo();
 
       const bubbleRect = bubbleElement.getBoundingClientRect();
       const rewardDrop = tryRewardDrop({
         x: bubbleRect.left + bubbleRect.width / 2,
         y: bubbleRect.top + bubbleRect.height / 2,
         modifiers: {
-          comboMultiplier: 1,
+          comboMultiplier: nextCombo >= 100 ? 1.25 : 1,
           feverMultiplier: 1,
         },
       });
@@ -147,6 +150,7 @@ export function BubbleBoard() {
     },
     [
       popBubble,
+      incrementCombo,
       soundEnabled,
       spawnBurst,
       tryRewardDrop,
