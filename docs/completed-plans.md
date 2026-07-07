@@ -53,3 +53,11 @@
 - 변경 파일: `src/app/App.tsx`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `src/domains/bubble/**`, `src/shared/hooks/useElementSize.ts`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`, `npm.cmd run dev -- --host 127.0.0.1`
 - 비고: 파티클 구현과 데스크톱/모바일 실제 화면 크기별 수동 검증은 남은 Phase 1 작업으로 유지한다. dev server는 `http://127.0.0.1:5173/`로 기동 확인 후 종료했다.
+
+### Phase 1 기본 파티클 구현
+
+- Phase: Phase 1. 핵심 손맛 구현
+- 관련 TODO: 기본 파티클 구현
+- 변경 파일: `src/features/play/BubbleBoard.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 파티클은 Framer Motion 기반의 짧은 버스트로 구현했다. 사운드/진동 연동은 Phase 2에서 진행한다.

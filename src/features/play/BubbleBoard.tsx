@@ -1,20 +1,30 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { PointerEvent } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { BUBBLE_GAP } from '../../domains/bubble/bubble.constants';
 import { useBubbleStore } from '../../domains/bubble/bubble.store';
 import { calculateBubbleLayout } from '../../domains/bubble/bubble.utils';
 import { useElementSize } from '../../shared/hooks/useElementSize';
 
-function getBubbleIdFromPoint(clientX: number, clientY: number): string | null {
-  const element = document.elementFromPoint(clientX, clientY);
-  const bubbleElement = element?.closest<HTMLElement>('[data-bubble-id]');
+interface PopBurst {
+  id: string;
+  left: number;
+  top: number;
+}
 
-  return bubbleElement?.dataset.bubbleId ?? null;
+function getBubbleElementFromPoint(
+  clientX: number,
+  clientY: number,
+): HTMLElement | null {
+  const element = document.elementFromPoint(clientX, clientY);
+
+  return element?.closest<HTMLElement>('[data-bubble-id]') ?? null;
 }
 
 export function BubbleBoard() {
   const [boardElement, setBoardElement] = useState<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [bursts, setBursts] = useState<PopBurst[]>([]);
   const size = useElementSize(boardElement);
   const bubbles = useBubbleStore((state) => state.bubbles);
   const poppedCount = useBubbleStore((state) => state.poppedCount);
@@ -45,9 +55,47 @@ export function BubbleBoard() {
     };
   }, []);
 
-  const handlePointerDown = (bubbleId: string) => {
+  const spawnBurst = useCallback(
+    (bubbleElement: HTMLElement) => {
+      if (!boardElement) {
+        return;
+      }
+
+      const boardRect = boardElement.getBoundingClientRect();
+      const bubbleRect = bubbleElement.getBoundingClientRect();
+      const left = bubbleRect.left - boardRect.left + bubbleRect.width / 2;
+      const top = bubbleRect.top - boardRect.top + bubbleRect.height / 2;
+      const id = `burst-${bubbleElement.dataset.bubbleId}-${Date.now()}`;
+
+      setBursts((currentBursts) => [...currentBursts, { id, left, top }]);
+      window.setTimeout(() => {
+        setBursts((currentBursts) =>
+          currentBursts.filter((burst) => burst.id !== id),
+        );
+      }, 520);
+    },
+    [boardElement],
+  );
+
+  const triggerBubblePop = useCallback(
+    (bubbleId: string, bubbleElement: HTMLElement) => {
+      const bubble = useBubbleStore
+        .getState()
+        .bubbles.find((currentBubble) => currentBubble.id === bubbleId);
+
+      if (!bubble || bubble.status === 'popped') {
+        return;
+      }
+
+      spawnBurst(bubbleElement);
+      popBubble(bubbleId);
+    },
+    [popBubble, spawnBurst],
+  );
+
+  const handlePointerDown = (bubbleId: string, bubbleElement: HTMLElement) => {
     setIsDragging(true);
-    popBubble(bubbleId);
+    triggerBubblePop(bubbleId, bubbleElement);
   };
 
   const setBoardRef = useCallback((element: HTMLDivElement | null) => {
@@ -59,20 +107,54 @@ export function BubbleBoard() {
       return;
     }
 
-    const bubbleId = getBubbleIdFromPoint(event.clientX, event.clientY);
+    const bubbleElement = getBubbleElementFromPoint(event.clientX, event.clientY);
+    const bubbleId = bubbleElement?.dataset.bubbleId;
 
-    if (bubbleId) {
-      popBubble(bubbleId);
+    if (bubbleId && bubbleElement) {
+      triggerBubblePop(bubbleId, bubbleElement);
     }
   };
 
   return (
     <section
       ref={setBoardRef}
-      className="mt-5 grid min-h-[420px] flex-1 select-none place-items-center overflow-hidden rounded-lg border border-sky-100 bg-white/80 p-3 shadow-sm sm:min-h-[520px] sm:p-5"
+      className="relative mt-5 grid min-h-[420px] flex-1 select-none place-items-center overflow-hidden rounded-lg border border-sky-100 bg-white/80 p-3 shadow-sm sm:min-h-[520px] sm:p-5"
       onPointerMove={handlePointerMove}
       aria-label="뽁뽁이 플레이 영역"
     >
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <AnimatePresence>
+          {bursts.map((burst) => (
+            <motion.div
+              key={burst.id}
+              className="absolute"
+              style={{ left: burst.left, top: burst.top }}
+              initial={{ opacity: 1, scale: 0.7 }}
+              animate={{ opacity: 0, scale: 1.25 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.48, ease: 'easeOut' }}
+            >
+              {Array.from({ length: 6 }, (_, index) => {
+                const angle = (Math.PI * 2 * index) / 6;
+                const distance = 24 + index * 2;
+
+                return (
+                  <motion.span
+                    key={index}
+                    className="absolute h-1.5 w-1.5 rounded-full bg-pop shadow-sm"
+                    initial={{ x: 0, y: 0 }}
+                    animate={{
+                      x: Math.cos(angle) * distance,
+                      y: Math.sin(angle) * distance,
+                    }}
+                    transition={{ duration: 0.42, ease: 'easeOut' }}
+                  />
+                );
+              })}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
       <div
         className="grid w-full max-w-5xl"
         style={{
@@ -99,10 +181,12 @@ export function BubbleBoard() {
               disabled={isPopped}
               aria-label={`뽁뽁이 ${index + 1}`}
               aria-pressed={isPopped}
-              onPointerDown={() => handlePointerDown(bubble.id)}
-              onPointerEnter={() => {
-                if (isDragging) {
-                  popBubble(bubble.id);
+              onPointerDown={(event) =>
+                handlePointerDown(bubble.id, event.currentTarget)
+              }
+              onPointerEnter={(event) => {
+                if (isDragging && event.currentTarget instanceof HTMLElement) {
+                  triggerBubblePop(bubble.id, event.currentTarget);
                 }
               }}
             >
