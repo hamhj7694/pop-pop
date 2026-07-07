@@ -1,0 +1,7 @@
+export const FEVER_DURATION_MS = 10_000;
+export const FEVER_BASE_CHANCE = 0.003;
+export const FEVER_COMBO_BONUS_CHANCE = 0.004;
+export const FEVER_COMBO_BONUS_THRESHOLD = 100;
+
+export const FEVER_REWARD_MULTIPLIER = 2.4;
+export const FEVER_EXCLUSIVE_REWARD_CHANCE = 0.012;

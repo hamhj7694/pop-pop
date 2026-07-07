@@ -117,3 +117,12 @@
 - 변경 파일: `src/domains/combo/**`, `src/features/combo/ComboFeedback.tsx`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 도감 버튼은 Phase 4 전까지 `도감 준비 중`으로 비활성화했다. `Popped` 표기는 세션 누적 의미가 드러나도록 `Session`으로 변경했다. 콤보 milestone, 보상 확률 multiplier, 기록 달성 피드백을 추가했다.
+
+### Phase 5 피버타임 기본 루프 구현
+
+- 완료일: 2026-07-07
+- Phase: Phase 5. 콤보와 피버타임
+- 관련 TODO: 피버타임 발동 확률 구현, 피버타임 남은 시간 표시 구현, 피버타임 상태 관리 구현, 피버타임 배경/버블/파티클 연출 구현, 피버타임 사운드/진동 연출 구현, 피버 전용 보상 카테고리 구현
+- 변경 파일: `src/domains/fever/**`, `src/features/fever/FeverStatus.tsx`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `src/domains/reward/**`, `src/shared/audio/audio.service.ts`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 피버는 낮은 확률로 자동 발동되며 콤보 100 이상에서 보너스 발동 확률을 받는다. 피버 중에는 배경, 버블, 파티클, 사운드, 진동이 달라지고 피버 전용 보상이 별도 확률로 드롭된다.

@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { BubbleBoard } from './BubbleBoard';
 import { useBubbleStore } from '../../domains/bubble/bubble.store';
 import { useComboStore } from '../../domains/combo/combo.store';
+import { useFeverStore } from '../../domains/fever/fever.store';
 import { REWARD_RARITIES } from '../../domains/reward/reward.constants';
 import { useSettingsStore } from '../../domains/settings/settings.store';
 import { ComboFeedback } from '../combo/ComboFeedback';
+import { FeverStatus } from '../fever/FeverStatus';
 import { RewardDropLayer } from '../reward/RewardDropLayer';
 import { TodayFindsButton } from '../reward/TodayFindsButton';
 import { TodayFindsOverlay } from '../reward/TodayFindsOverlay';
@@ -16,12 +18,19 @@ export function PlayScreen() {
   const poppedCount = useBubbleStore((state) => state.poppedCount);
   const currentCombo = useComboStore((state) => state.currentCombo);
   const maxCombo = useComboStore((state) => state.maxCombo);
+  const isFeverActive = useFeverStore((state) => state.isFeverActive);
+  const remainingFeverSeconds = useFeverStore((state) => state.remainingSeconds);
   const soundEnabled = useSettingsStore((state) => state.soundEnabled);
   const vibrationEnabled = useSettingsStore((state) => state.vibrationEnabled);
   const effectIntensity = useSettingsStore((state) => state.effectIntensity);
 
   return (
-    <main className="min-h-screen bg-[#f7fbff] text-ink">
+    <main
+      className={[
+        'min-h-screen text-ink transition-colors duration-300',
+        isFeverActive ? 'bg-[#fff8e8]' : 'bg-[#f7fbff]',
+      ].join(' ')}
+    >
       <section className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col px-4 py-4 sm:px-6">
         <header className="flex items-center justify-between gap-3">
           <div>
@@ -54,6 +63,7 @@ export function PlayScreen() {
         />
         <RewardDropLayer />
         <ComboFeedback />
+        <FeverStatus />
 
         <BubbleBoard />
 
@@ -64,6 +74,11 @@ export function PlayScreen() {
           <div className="hidden rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm sm:block">
             Best {maxCombo}
           </div>
+          {isFeverActive && (
+            <div className="rounded-md bg-amber-100 px-3 py-2 text-sm font-black text-amber-900 shadow-sm">
+              Fever {remainingFeverSeconds}s
+            </div>
+          )}
           <div className="rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm">
             Session {poppedCount}
           </div>

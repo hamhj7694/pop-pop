@@ -10,6 +10,7 @@ const POP_SOUND_CONFIGS = [
 
 const MIN_PLAY_INTERVAL_MS = 34;
 let popSounds: Howl[] | null = null;
+let feverStartSound: Howl | null = null;
 let lastPlayedAt = 0;
 
 function getPopSounds() {
@@ -41,4 +42,18 @@ export function playBubblePopSound(volume: number) {
   const sound = sounds[Math.floor(Math.random() * sounds.length)];
 
   sound.play();
+}
+
+export function playFeverStartSound(volume: number) {
+  Howler.volume(Math.max(0, Math.min(1, volume)));
+
+  if (!feverStartSound) {
+    feverStartSound = new Howl({
+      src: [createPopSoundDataUri({ frequency: 860, duration: 0.18 })],
+      html5: false,
+      preload: true,
+    });
+  }
+
+  feverStartSound.play();
 }

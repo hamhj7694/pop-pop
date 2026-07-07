@@ -6,11 +6,20 @@ import { useBubbleStore } from '../../domains/bubble/bubble.store';
 import { calculateBubbleLayout } from '../../domains/bubble/bubble.utils';
 import { getComboRewardMultiplier } from '../../domains/combo/combo.constants';
 import { useComboStore } from '../../domains/combo/combo.store';
+import {
+  FEVER_EXCLUSIVE_REWARD_CHANCE,
+  FEVER_REWARD_MULTIPLIER,
+} from '../../domains/fever/fever.constants';
+import { useFeverStore } from '../../domains/fever/fever.store';
 import { useRewardStore } from '../../domains/reward/reward.store';
 import { useSettingsStore } from '../../domains/settings/settings.store';
-import { playBubblePopSound } from '../../shared/audio/audio.service';
+import {
+  playBubblePopSound,
+  playFeverStartSound,
+} from '../../shared/audio/audio.service';
 import {
   vibrateBubblePop,
+  vibrateFeverStart,
   vibrateRareReward,
   vibrateSuperRareReward,
 } from '../../shared/haptics/haptics.service';
@@ -22,6 +31,7 @@ interface PopBurst {
   top: number;
   particleCount: number;
   distance: number;
+  isFever: boolean;
 }
 
 const EFFECT_PARTICLE_CONFIG = {
@@ -49,6 +59,8 @@ export function BubbleBoard() {
   const initializeBoard = useBubbleStore((state) => state.initializeBoard);
   const popBubble = useBubbleStore((state) => state.popBubble);
   const incrementCombo = useComboStore((state) => state.incrementCombo);
+  const isFeverActive = useFeverStore((state) => state.isFeverActive);
+  const tryStartFever = useFeverStore((state) => state.tryStartFever);
   const tryRewardDrop = useRewardStore((state) => state.tryRewardDrop);
   const soundEnabled = useSettingsStore((state) => state.soundEnabled);
   const vibrationEnabled = useSettingsStore((state) => state.vibrationEnabled);
@@ -100,6 +112,7 @@ export function BubbleBoard() {
           top,
           particleCount: effectConfig.particleCount,
           distance: effectConfig.distance,
+          isFever: useFeverStore.getState().isFeverActive,
         },
       ]);
       window.setTimeout(() => {
@@ -125,23 +138,39 @@ export function BubbleBoard() {
         playBubblePopSound(volume);
       }
 
-      spawnBurst(bubbleElement);
       popBubble(bubbleId);
       const nextCombo = incrementCombo();
+      const feverStarted = tryStartFever(nextCombo);
+      const isRewardFeverActive =
+        feverStarted || useFeverStore.getState().isFeverActive;
+
+      if (feverStarted && soundEnabled) {
+        playFeverStartSound(volume);
+      }
+
+      spawnBurst(bubbleElement);
 
       const bubbleRect = bubbleElement.getBoundingClientRect();
       const rewardDrop = tryRewardDrop({
         x: bubbleRect.left + bubbleRect.width / 2,
         y: bubbleRect.top + bubbleRect.height / 2,
+        obtainedSource: isRewardFeverActive ? 'fever' : 'random',
         modifiers: {
           comboMultiplier: getComboRewardMultiplier(nextCombo),
-          feverMultiplier: 1,
+          feverMultiplier: isRewardFeverActive ? FEVER_REWARD_MULTIPLIER : 1,
+          feverExclusiveChance: isRewardFeverActive
+            ? FEVER_EXCLUSIVE_REWARD_CHANCE
+            : 0,
         },
       });
 
       if (vibrationEnabled) {
-        if (rewardDrop?.reward.rarity === 'super_rare') {
+        if (feverStarted) {
+          vibrateFeverStart();
+        } else if (rewardDrop?.reward.rarity === 'super_rare') {
           vibrateSuperRareReward();
+        } else if (rewardDrop?.reward.rarity === 'fever') {
+          vibrateFeverStart();
         } else if (rewardDrop?.reward.rarity === 'rare') {
           vibrateRareReward();
         } else {
@@ -152,6 +181,7 @@ export function BubbleBoard() {
     [
       popBubble,
       incrementCombo,
+      tryStartFever,
       soundEnabled,
       spawnBurst,
       tryRewardDrop,
@@ -185,7 +215,12 @@ export function BubbleBoard() {
   return (
     <section
       ref={setBoardRef}
-      className="relative mt-5 grid min-h-[420px] flex-1 select-none place-items-center overflow-hidden rounded-lg border border-sky-200 bg-[#eaf7ff] p-3 shadow-sm sm:min-h-[520px] sm:p-5"
+      className={[
+        'relative mt-5 grid min-h-[420px] flex-1 select-none place-items-center overflow-hidden rounded-lg border p-3 shadow-sm transition-colors duration-300 sm:min-h-[520px] sm:p-5',
+        isFeverActive
+          ? 'border-amber-300 bg-[#fff1c7]'
+          : 'border-sky-200 bg-[#eaf7ff]',
+      ].join(' ')}
       onPointerMove={handlePointerMove}
       aria-label="뽁뽁이 플레이 영역"
     >
@@ -208,7 +243,10 @@ export function BubbleBoard() {
                 return (
                   <motion.span
                     key={index}
-                    className="absolute h-1.5 w-1.5 rounded-full bg-pop shadow-sm"
+                    className={[
+                      'absolute h-1.5 w-1.5 rounded-full shadow-sm',
+                      burst.isFever ? 'bg-amber-400' : 'bg-pop',
+                    ].join(' ')}
                     initial={{ x: 0, y: 0 }}
                     animate={{
                       x: Math.cos(angle) * distance,
@@ -243,7 +281,9 @@ export function BubbleBoard() {
                 'focus:outline-none focus-visible:ring-2 focus-visible:ring-pop focus-visible:ring-offset-2',
                 isPopped
                   ? 'scale-75 border-slate-200 bg-slate-200 opacity-35 shadow-none'
-                  : 'border-cyan-400 bg-[#76d7f2] hover:scale-95 active:scale-90',
+                  : isFeverActive
+                    ? 'border-amber-400 bg-[#ffd166] hover:scale-95 active:scale-90'
+                    : 'border-cyan-400 bg-[#76d7f2] hover:scale-95 active:scale-90',
               ].join(' ')}
               disabled={isPopped}
               aria-label={`뽁뽁이 ${index + 1}`}
