@@ -189,3 +189,12 @@
 - 변경 파일: `src/features/collection/CollectionOverlay.tsx`, `src/features/reward/TodayFindsButton.tsx`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 오늘 주운 것들 탭과 하단 수집함 버튼은 같은 보상이 여러 번 획득되어도 최신 1개만 보여주도록 정리했다. 내부 획득 이력은 유지한다.
+
+### 보상 발견 오버레이 입력 간섭 제거
+
+- 완료일: 2026-07-07
+- Phase: Phase 8. 품질 안정화와 MVP 릴리스 준비
+- 관련 TODO: 보상 발견 오버레이를 콤보 피드백 방식의 비간섭 레이어로 변경
+- 변경 파일: `src/features/reward/RewardRevealToast.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 보상 발견과 상자 개봉 안내를 콤보 피드백처럼 단일 `pointer-events-none` 상단 카드 레이어로 통일했다. 화면 전체를 덮던 박스 이펙트 레이어를 제거해 뽁뽁이 클릭/드래그 시작 지점과 겹치지 않게 했다.
