@@ -1,9 +1,23 @@
+import { useMemo } from 'react';
 import { useCollectionStore } from '../../domains/collection/collection.store';
 import { REWARD_RARITY_STYLES } from '../../domains/reward/reward.constants';
 import { useRewardStore } from '../../domains/reward/reward.store';
+import type { ObtainedReward } from '../../domains/reward/reward.types';
 
 interface TodayFindsButtonProps {
   onClick: () => void;
+}
+
+function getUniqueLatestRewards(obtainedRewards: ObtainedReward[]) {
+  const latestRewards = new Map<string, ObtainedReward>();
+
+  for (const obtainedReward of obtainedRewards) {
+    if (!latestRewards.has(obtainedReward.reward.id)) {
+      latestRewards.set(obtainedReward.reward.id, obtainedReward);
+    }
+  }
+
+  return [...latestRewards.values()];
 }
 
 export function TodayFindsButton({ onClick }: TodayFindsButtonProps) {
@@ -11,8 +25,12 @@ export function TodayFindsButton({ onClick }: TodayFindsButtonProps) {
   const collectionCount = useCollectionStore(
     (state) => Object.keys(state.collectedRewards).length,
   );
-  const newCount = obtainedRewards.filter((reward) => reward.isNew).length;
-  const recentRewards = obtainedRewards.slice(0, 3);
+  const todayRewards = useMemo(
+    () => getUniqueLatestRewards(obtainedRewards),
+    [obtainedRewards],
+  );
+  const newCount = todayRewards.filter((reward) => reward.isNew).length;
+  const recentRewards = todayRewards.slice(0, 3);
 
   return (
     <div className="flex items-end gap-2">
@@ -38,10 +56,10 @@ export function TodayFindsButton({ onClick }: TodayFindsButtonProps) {
       <button
         type="button"
         className="relative h-11 rounded-md bg-ink px-4 text-sm font-bold text-white shadow-sm"
-        aria-label={`수집함 열기, 오늘 ${obtainedRewards.length}개, 전체 ${collectionCount}개`}
+        aria-label={`수집함 열기, 오늘 ${todayRewards.length}개, 전체 ${collectionCount}개`}
         onClick={onClick}
       >
-        수집함 {obtainedRewards.length}/{collectionCount}
+        수집함 {todayRewards.length}/{collectionCount}
         {newCount > 0 && (
           <span className="absolute -right-2 -top-2 grid h-6 min-w-6 place-items-center rounded-full bg-pop px-1 text-xs text-white">
             {newCount}

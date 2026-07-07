@@ -41,6 +41,18 @@ function getRewardLabel(reward: Reward, isCollected: boolean) {
   return isCollected ? reward.title : '???';
 }
 
+function getUniqueLatestRewards(obtainedRewards: ObtainedReward[]) {
+  const latestRewards = new Map<string, ObtainedReward>();
+
+  for (const obtainedReward of obtainedRewards) {
+    if (!latestRewards.has(obtainedReward.reward.id)) {
+      latestRewards.set(obtainedReward.reward.id, obtainedReward);
+    }
+  }
+
+  return [...latestRewards.values()];
+}
+
 function TodayDetail({ obtainedReward }: { obtainedReward: ObtainedReward }) {
   return (
     <>
@@ -84,6 +96,10 @@ export function CollectionOverlay({ isOpen, onClose }: CollectionOverlayProps) {
   );
   const obtainedRewards = useRewardStore((state) => state.obtainedRewards);
   const markAllSeen = useRewardStore((state) => state.markAllSeen);
+  const todayRewards = useMemo(
+    () => getUniqueLatestRewards(obtainedRewards),
+    [obtainedRewards],
+  );
   const collectedIds = useMemo(
     () => new Set(Object.keys(collectedRewards)),
     [collectedRewards],
@@ -91,11 +107,11 @@ export function CollectionOverlay({ isOpen, onClose }: CollectionOverlayProps) {
   const filteredTodayRewards = useMemo(
     () =>
       filter === 'all'
-        ? obtainedRewards
-        : obtainedRewards.filter(
+        ? todayRewards
+        : todayRewards.filter(
             (obtainedReward) => obtainedReward.reward.rarity === filter,
           ),
-    [filter, obtainedRewards],
+    [filter, todayRewards],
   );
   const filteredCatalogRewards = useMemo(
     () =>
@@ -221,7 +237,7 @@ export function CollectionOverlay({ isOpen, onClose }: CollectionOverlayProps) {
               수집함
             </h2>
             <p className="text-sm text-slate-500">
-              오늘 {obtainedRewards.length}개 · 전체 {totalCollected}/
+              오늘 {todayRewards.length}개 · 전체 {totalCollected}/
               {SAMPLE_REWARDS.length} · {totalRate}%
             </p>
           </div>
@@ -306,8 +322,8 @@ export function CollectionOverlay({ isOpen, onClose }: CollectionOverlayProps) {
                   );
             const todayCount =
               option.value === 'all'
-                ? obtainedRewards.length
-                : obtainedRewards.filter(
+                ? todayRewards.length
+                : todayRewards.filter(
                     (reward) => reward.reward.rarity === option.value,
                   ).length;
             const collectedCount = catalogRewards.filter((reward) =>

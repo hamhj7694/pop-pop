@@ -180,3 +180,12 @@
 - 변경 파일: `src/features/play/BubbleBoard.tsx`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 드래그 시작 시 버블 보드가 pointer capture를 잡도록 변경하고, 이동 중 `elementsFromPoint`로 상자/토스트 아래의 뽁뽁이도 찾도록 보강했다. 모바일 터치 제스처 간섭을 줄이기 위해 보드에 `touch-none`을 추가했다.
+
+### 수집함 오늘 목록 중복 제거
+
+- 완료일: 2026-07-07
+- Phase: Phase 3/4 조정
+- 관련 TODO: 수집함 오늘 목록 중복 보상 숨김 처리
+- 변경 파일: `src/features/collection/CollectionOverlay.tsx`, `src/features/reward/TodayFindsButton.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 오늘 주운 것들 탭과 하단 수집함 버튼은 같은 보상이 여러 번 획득되어도 최신 1개만 보여주도록 정리했다. 내부 획득 이력은 유지한다.
