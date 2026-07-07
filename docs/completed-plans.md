@@ -35,3 +35,13 @@
 - 변경 파일: `docs/development-plan.md`, `TODO.md`, `docs/completed-plans.md`, `docs/README.md`
 - 검증: 문서 간 참조 경로와 Phase 구성을 확인한다.
 - 비고: 이후 완료 작업은 `TODO.md` 체크와 함께 이 문서에 누적 기록한다.
+
+## 2026-07-07
+
+### Phase 0 프로젝트 기반 구축
+
+- Phase: Phase 0. 프로젝트 기반 구축
+- 관련 TODO: Vite + React + TypeScript 프로젝트 초기화, Tailwind CSS 설정, Zustand/Framer Motion/Howler.js 설치, 기본 폴더 구조 구성, 도메인 타입과 상수 초안 작성, 기본 화면 전환 구조 결정, lint/build 스크립트 확인, 로컬 개발 서버 실행 확인
+- 변경 파일: `.gitignore`, `package.json`, `package-lock.json`, `index.html`, `vite.config.ts`, `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`, `tailwind.config.ts`, `postcss.config.js`, `eslint.config.js`, `src/main.tsx`, `src/app/App.tsx`, `src/styles/index.css`, `src/domains/**`, `src/shared/**`, `TODO.md`
+- 검증: `npm.cmd install`, `npm.cmd run lint`, `npm.cmd run build`, `npm.cmd run dev -- --host 127.0.0.1`
+- 비고: 샌드박스의 상위 디렉터리 읽기 제한 때문에 Vite build/dev는 승인 환경에서 검증했다. dev server는 `http://127.0.0.1:5173/`로 기동 확인 후 종료했다.

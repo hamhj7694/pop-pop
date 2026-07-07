@@ -23,14 +23,14 @@
 
 ## Phase 0. 프로젝트 기반 구축
 
-- [ ] Vite + React + TypeScript 프로젝트 초기화
-- [ ] Tailwind CSS 설정
-- [ ] Zustand, Framer Motion, Howler.js 설치
-- [ ] 기본 폴더 구조 구성
-- [ ] 도메인 타입과 상수 초안 작성
-- [ ] 기본 화면 전환 구조 결정
-- [ ] lint, format, build 스크립트 확인
-- [ ] 로컬 개발 서버 실행 확인
+- [x] Vite + React + TypeScript 프로젝트 초기화
+- [x] Tailwind CSS 설정
+- [x] Zustand, Framer Motion, Howler.js 설치
+- [x] 기본 폴더 구조 구성
+- [x] 도메인 타입과 상수 초안 작성
+- [x] 기본 화면 전환 구조 결정
+- [x] lint, format, build 스크립트 확인
+- [x] 로컬 개발 서버 실행 확인
 
 ## Phase 1. 핵심 손맛 구현
 
