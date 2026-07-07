@@ -7,6 +7,7 @@ import type {
   RewardDrop,
 } from './reward.types';
 import { rollRandomReward } from './reward.engine';
+import { useCollectionStore } from '../collection/collection.store';
 
 interface TryRewardDropOptions {
   x: number;
@@ -94,6 +95,12 @@ export const useRewardStore = create<RewardState>((set) => ({
         selectedRewardId: state.selectedRewardId ?? obtainedReward.id,
       };
     });
+
+    if (createdDrop) {
+      useCollectionStore
+        .getState()
+        .saveReward(reward, new Date().toISOString(), obtainedSource);
+    }
 
     return createdDrop;
   },

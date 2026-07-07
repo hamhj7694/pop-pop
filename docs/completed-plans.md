@@ -126,3 +126,12 @@
 - 변경 파일: `src/domains/fever/**`, `src/features/fever/FeverStatus.tsx`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `src/domains/reward/**`, `src/shared/audio/audio.service.ts`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 피버는 낮은 확률로 자동 발동되며 콤보 100 이상에서 보너스 발동 확률을 받는다. 피버 중에는 배경, 버블, 파티클, 사운드, 진동이 달라지고 피버 전용 보상이 별도 확률로 드롭된다.
+
+### Phase 4 로컬 도감 MVP 구현
+
+- 완료일: 2026-07-07
+- Phase: Phase 4. 도감과 장기 수집
+- 관련 TODO: 도감 데이터 모델 구현, 획득 보상 도감 저장 구현, 미획득 콘텐츠 `???` 표시 구현, 전체 수집률 구현, 카테고리별 수집률 구현, 일반/희귀/초희귀/피버 전용 탭 구현, 최근 획득 항목 표시 구현, 게스트 도감 저장 유도 정책 정리, 로컬 저장 기반 MVP 도감 구현
+- 변경 파일: `src/domains/collection/**`, `src/features/collection/CollectionOverlay.tsx`, `src/domains/reward/reward.store.ts`, `src/features/reward/TodayFindsOverlay.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 도감은 `toktok-collection` localStorage에 저장한다. 오늘 주운 것들은 세션 획득 목록으로 유지하고, 도감은 장기 수집률과 미획득 항목을 보여주는 별도 오버레이로 분리했다.
