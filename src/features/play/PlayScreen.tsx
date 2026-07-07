@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { BubbleBoard } from './BubbleBoard';
 import { useBubbleStore } from '../../domains/bubble/bubble.store';
-import { useCollectionStore } from '../../domains/collection/collection.store';
 import { useComboStore } from '../../domains/combo/combo.store';
 import { useFeverStore } from '../../domains/fever/fever.store';
 import { REWARD_RARITIES } from '../../domains/reward/reward.constants';
@@ -11,17 +10,12 @@ import { ComboFeedback } from '../combo/ComboFeedback';
 import { RewardDropLayer } from '../reward/RewardDropLayer';
 import { RewardRevealToast } from '../reward/RewardRevealToast';
 import { TodayFindsButton } from '../reward/TodayFindsButton';
-import { TodayFindsOverlay } from '../reward/TodayFindsOverlay';
 import { SettingsPanel } from '../settings/SettingsPanel';
 
 export function PlayScreen() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isTodayFindsOpen, setIsTodayFindsOpen] = useState(false);
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
   const poppedCount = useBubbleStore((state) => state.poppedCount);
-  const collectionCount = useCollectionStore(
-    (state) => Object.keys(state.collectedRewards).length,
-  );
   const currentCombo = useComboStore((state) => state.currentCombo);
   const maxCombo = useComboStore((state) => state.maxCombo);
   const isFeverActive = useFeverStore((state) => state.isFeverActive);
@@ -43,24 +37,14 @@ export function PlayScreen() {
             <p className="text-sm font-semibold text-pop">TOKTOK</p>
             <h1 className="text-2xl font-bold sm:text-3xl">뽁뽁 플레이</h1>
           </div>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold shadow-sm"
-              aria-expanded={isCollectionOpen}
-              onClick={() => setIsCollectionOpen((current) => !current)}
-            >
-              도감 {collectionCount}
-            </button>
-            <button
-              type="button"
-              className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold shadow-sm"
-              aria-expanded={isSettingsOpen}
-              onClick={() => setIsSettingsOpen((current) => !current)}
-            >
-              설정
-            </button>
-          </div>
+          <button
+            type="button"
+            className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold shadow-sm"
+            aria-expanded={isSettingsOpen}
+            onClick={() => setIsSettingsOpen((current) => !current)}
+          >
+            설정
+          </button>
         </header>
 
         <SettingsPanel
@@ -88,13 +72,9 @@ export function PlayScreen() {
           <div className="rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm">
             Session {poppedCount}
           </div>
-          <TodayFindsButton onClick={() => setIsTodayFindsOpen(true)} />
+          <TodayFindsButton onClick={() => setIsCollectionOpen(true)} />
         </footer>
 
-        <TodayFindsOverlay
-          isOpen={isTodayFindsOpen}
-          onClose={() => setIsTodayFindsOpen(false)}
-        />
         <CollectionOverlay
           isOpen={isCollectionOpen}
           onClose={() => setIsCollectionOpen(false)}

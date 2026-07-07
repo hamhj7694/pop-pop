@@ -144,3 +144,12 @@
 - 변경 파일: `src/domains/reward/**`, `src/features/reward/**`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 기본 터짐 효과는 유지했다. 추가 기분 이펙트는 낮은 확률로 발동하고 피버 중 더 자주 나온다. 보상은 즉시 저장하지 않고 선물상자/카드가 바닥에 쌓인 뒤 사용자가 클릭하면 오늘 주운 것들과 도감에 반영된다.
+
+### 수집함 UI 통합
+
+- 완료일: 2026-07-07
+- Phase: Phase 3/4 조정
+- 관련 TODO: 오늘 주운 것들과 도감 UI를 수집함으로 통합
+- 변경 파일: `src/features/collection/CollectionOverlay.tsx`, `src/features/reward/TodayFindsButton.tsx`, `src/features/reward/TodayFindsOverlay.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 하단 버튼을 `수집함` 하나로 통일하고, 오버레이 내부에서 `오늘 주운 것들`과 `전체 수집`을 탭으로 전환하도록 변경했다. 별도 도감 버튼과 오늘 주운 것들 오버레이는 제거했다.
