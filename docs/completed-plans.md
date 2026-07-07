@@ -153,3 +153,12 @@
 - 변경 파일: `src/features/collection/CollectionOverlay.tsx`, `src/features/reward/TodayFindsButton.tsx`, `src/features/reward/TodayFindsOverlay.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 하단 버튼을 `수집함` 하나로 통일하고, 오버레이 내부에서 `오늘 주운 것들`과 `전체 수집`을 탭으로 전환하도록 변경했다. 별도 도감 버튼과 오늘 주운 것들 오버레이는 제거했다.
+
+### 상자 중심 보상 개봉 흐름 개선
+
+- 완료일: 2026-07-07
+- Phase: Phase 3/5 조정
+- 관련 TODO: 바닥 드롭을 상자 전용 불규칙 누적 배치로 변경, 상자 개봉 시 보상/대형 이펙트/이벤트/피버타임 랜덤 결과 구현
+- 변경 파일: `src/domains/reward/**`, `src/features/reward/RewardDropLayer.tsx`, `src/features/reward/RewardRevealToast.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 바닥에는 카드 없이 상자만 쌓인다. 문구성 보상은 즉시 수집함에 들어가며 상단 토스트로 노출되고, 상자는 클릭 시점에 보상 또는 비보상 이벤트 결과를 결정한다.

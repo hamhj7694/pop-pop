@@ -21,7 +21,6 @@ import {
   vibrateBubblePop,
   vibrateFeverStart,
   vibrateRareReward,
-  vibrateSuperRareReward,
 } from '../../shared/haptics/haptics.service';
 import { useElementSize } from '../../shared/hooks/useElementSize';
 
@@ -238,11 +237,7 @@ export function BubbleBoard() {
       if (vibrationEnabled) {
         if (feverStarted) {
           vibrateFeverStart();
-        } else if (rewardDrop?.reward.rarity === 'super_rare') {
-          vibrateSuperRareReward();
-        } else if (rewardDrop?.reward.rarity === 'fever') {
-          vibrateFeverStart();
-        } else if (rewardDrop?.reward.rarity === 'rare') {
+        } else if (rewardDrop) {
           vibrateRareReward();
         } else {
           vibrateBubblePop();

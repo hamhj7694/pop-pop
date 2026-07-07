@@ -34,10 +34,25 @@ export interface ObtainedReward {
 
 export interface RewardDrop {
   id: string;
-  reward: Reward;
   x: number;
   y: number;
-  containerType: 'gift' | 'card';
+  floorX: number;
+  floorBottom: number;
+  rotation: number;
   obtainedSource: ObtainedSource;
+  modifiers?: RewardChanceModifiers;
   createdAt: string;
 }
+
+export type BoxEffectType = 'big_particles' | 'fever_start' | 'event';
+
+export interface BoxEffect {
+  id: string;
+  type: BoxEffectType;
+  label: string;
+  message: string;
+}
+
+export type BoxOpenResult =
+  | { type: 'reward'; obtainedReward: ObtainedReward }
+  | { type: 'effect'; effect: BoxEffect };
