@@ -38,6 +38,7 @@ export function TodayFindsButton({ onClick }: TodayFindsButtonProps) {
       <button
         type="button"
         className="relative h-11 rounded-md bg-ink px-4 text-sm font-bold text-white shadow-sm"
+        aria-label={`수집함 열기, 오늘 ${obtainedRewards.length}개, 전체 ${collectionCount}개`}
         onClick={onClick}
       >
         수집함 {obtainedRewards.length}/{collectionCount}

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useCollectionStore } from '../../domains/collection/collection.store';
 import {
   REWARD_RARITIES,
@@ -131,6 +131,23 @@ export function CollectionOverlay({ isOpen, onClose }: CollectionOverlayProps) {
   const totalCollected = collectedIds.size;
   const totalRate = getRate(totalCollected, SAMPLE_REWARDS.length);
 
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        markAllSeen();
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, markAllSeen, onClose]);
+
   if (!isOpen) {
     return null;
   }
@@ -193,12 +210,16 @@ export function CollectionOverlay({ isOpen, onClose }: CollectionOverlayProps) {
   return (
     <section
       className="fixed inset-x-0 bottom-0 z-30 h-[86vh] overflow-hidden rounded-t-lg border border-slate-200 bg-white shadow-2xl"
-      aria-label="수집함"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="collection-title"
     >
       <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-3 p-4">
         <header className="flex shrink-0 items-center justify-between gap-3">
           <div>
-            <h2 className="text-xl font-bold">수집함</h2>
+            <h2 id="collection-title" className="text-xl font-bold">
+              수집함
+            </h2>
             <p className="text-sm text-slate-500">
               오늘 {obtainedRewards.length}개 · 전체 {totalCollected}/
               {SAMPLE_REWARDS.length} · {totalRate}%
@@ -213,7 +234,7 @@ export function CollectionOverlay({ isOpen, onClose }: CollectionOverlayProps) {
           </button>
         </header>
 
-        <div className="grid shrink-0 grid-cols-2 gap-2">
+        <div className="grid shrink-0 grid-cols-2 gap-2" role="tablist">
           {[
             ['today', '오늘 주운 것들'],
             ['catalog', '전체 수집'],
@@ -221,6 +242,8 @@ export function CollectionOverlay({ isOpen, onClose }: CollectionOverlayProps) {
             <button
               key={value}
               type="button"
+              role="tab"
+              aria-selected={view === value}
               className={[
                 'h-10 rounded-md border text-sm font-bold',
                 view === value
@@ -299,6 +322,7 @@ export function CollectionOverlay({ isOpen, onClose }: CollectionOverlayProps) {
               <button
                 key={option.value}
                 type="button"
+                aria-pressed={filter === option.value}
                 className={[
                   'h-9 rounded-md border px-3 text-sm font-semibold',
                   filter === option.value
@@ -319,6 +343,7 @@ export function CollectionOverlay({ isOpen, onClose }: CollectionOverlayProps) {
         <div className="grid shrink-0 grid-cols-2 gap-2 md:hidden">
           <button
             type="button"
+            aria-pressed={mobileView === 'list'}
             className={[
               'h-10 rounded-md border text-sm font-bold',
               mobileView === 'list'
@@ -331,6 +356,7 @@ export function CollectionOverlay({ isOpen, onClose }: CollectionOverlayProps) {
           </button>
           <button
             type="button"
+            aria-pressed={mobileView === 'detail'}
             className={[
               'h-10 rounded-md border text-sm font-bold',
               mobileView === 'detail'

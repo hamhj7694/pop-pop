@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import type { EffectIntensity } from '../../domains/settings/settings.types';
 import { useSettingsStore } from '../../domains/settings/settings.store';
 
@@ -26,17 +27,38 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
     (state) => state.setEffectIntensity,
   );
 
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) {
     return null;
   }
 
   return (
     <aside
+      id="settings-panel"
       className="absolute right-4 top-20 z-20 w-[min(22rem,calc(100vw-2rem))] rounded-lg border border-slate-200 bg-white p-4 shadow-xl"
-      aria-label="설정"
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby="settings-title"
     >
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="text-lg font-bold">설정</h2>
+        <h2 id="settings-title" className="text-lg font-bold">
+          설정
+        </h2>
         <button
           type="button"
           className="h-9 rounded-md border border-slate-200 px-3 text-sm font-semibold"

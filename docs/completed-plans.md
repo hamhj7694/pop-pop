@@ -162,3 +162,12 @@
 - 변경 파일: `src/domains/reward/**`, `src/features/reward/RewardDropLayer.tsx`, `src/features/reward/RewardRevealToast.tsx`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 바닥에는 카드 없이 상자만 쌓인다. 문구성 보상은 즉시 수집함에 들어가며 상단 토스트로 노출되고, 상자는 클릭 시점에 보상 또는 비보상 이벤트 결과를 결정한다.
+
+### 설정과 수집함 접근성 정리
+
+- 완료일: 2026-07-07
+- Phase: Phase 8. 품질 안정화와 MVP 릴리스 준비
+- 관련 TODO: 설정/수집함 접근성 점검
+- 변경 파일: `src/features/settings/SettingsPanel.tsx`, `src/features/collection/CollectionOverlay.tsx`, `src/features/reward/TodayFindsButton.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 설정과 수집함에 dialog 역할, 제목 연결, ESC 닫기, 선택 상태 aria 속성을 추가했다. 설정 문구도 깨진 한글을 정상 문구로 정리했다.

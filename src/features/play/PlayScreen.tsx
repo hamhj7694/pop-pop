@@ -41,6 +41,7 @@ export function PlayScreen() {
             type="button"
             className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold shadow-sm"
             aria-expanded={isSettingsOpen}
+            aria-controls="settings-panel"
             onClick={() => setIsSettingsOpen((current) => !current)}
           >
             설정
