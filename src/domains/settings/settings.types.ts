@@ -1,8 +1,10 @@
+export type EffectIntensity = 'low' | 'normal' | 'high';
+
 export interface UserSettings {
   soundEnabled: boolean;
   vibrationEnabled: boolean;
   volume: number;
-  effectIntensity: 'low' | 'normal' | 'high';
+  effectIntensity: EffectIntensity;
   selectedThemeId: string;
   selectedEffectId: string;
   selectedSoundPackId: string;

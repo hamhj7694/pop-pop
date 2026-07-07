@@ -61,3 +61,11 @@
 - 변경 파일: `src/features/play/BubbleBoard.tsx`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 파티클은 Framer Motion 기반의 짧은 버스트로 구현했다. 사운드/진동 연동은 Phase 2에서 진행한다.
+
+### Phase 2 감각 피드백과 설정
+
+- Phase: Phase 2. 감각 피드백과 설정
+- 관련 TODO: Howler.js 기반 사운드 래퍼 구현, 기본 터짐 사운드 랜덤 재생 구현, 연속 입력 중 사운드 중복 제한 구현, Vibration API 래퍼 구현, 진동 미지원 환경 무해 처리, 일반/희귀/초희귀/피버 진동 패턴 준비, 설정 상태 구현, 사운드 ON/OFF 구현, 볼륨 조절 구현, 진동 ON/OFF 구현, 이펙트 강도 설정 구현, 설정 로컬 저장 구현
+- 변경 파일: `src/shared/audio/**`, `src/shared/haptics/**`, `src/domains/settings/**`, `src/features/settings/SettingsPanel.tsx`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`, `npm.cmd run dev -- --host 127.0.0.1`
+- 비고: 기본 pop 사운드는 런타임 생성 WAV data URI를 Howler로 재생한다. 사운드는 34ms 최소 간격으로 제한했고, 설정은 `toktok-settings` localStorage 키로 저장한다. dev server는 `http://127.0.0.1:5173/`로 기동 확인 후 종료했다.

@@ -4,13 +4,24 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { BUBBLE_GAP } from '../../domains/bubble/bubble.constants';
 import { useBubbleStore } from '../../domains/bubble/bubble.store';
 import { calculateBubbleLayout } from '../../domains/bubble/bubble.utils';
+import { useSettingsStore } from '../../domains/settings/settings.store';
+import { playBubblePopSound } from '../../shared/audio/audio.service';
+import { vibrateBubblePop } from '../../shared/haptics/haptics.service';
 import { useElementSize } from '../../shared/hooks/useElementSize';
 
 interface PopBurst {
   id: string;
   left: number;
   top: number;
+  particleCount: number;
+  distance: number;
 }
+
+const EFFECT_PARTICLE_CONFIG = {
+  low: { particleCount: 3, distance: 18 },
+  normal: { particleCount: 6, distance: 24 },
+  high: { particleCount: 9, distance: 30 },
+} as const;
 
 function getBubbleElementFromPoint(
   clientX: number,
@@ -30,6 +41,10 @@ export function BubbleBoard() {
   const poppedCount = useBubbleStore((state) => state.poppedCount);
   const initializeBoard = useBubbleStore((state) => state.initializeBoard);
   const popBubble = useBubbleStore((state) => state.popBubble);
+  const soundEnabled = useSettingsStore((state) => state.soundEnabled);
+  const vibrationEnabled = useSettingsStore((state) => state.vibrationEnabled);
+  const volume = useSettingsStore((state) => state.volume);
+  const effectIntensity = useSettingsStore((state) => state.effectIntensity);
   const layout = useMemo(
     () => calculateBubbleLayout(size.width, size.height),
     [size.width, size.height],
@@ -66,15 +81,25 @@ export function BubbleBoard() {
       const left = bubbleRect.left - boardRect.left + bubbleRect.width / 2;
       const top = bubbleRect.top - boardRect.top + bubbleRect.height / 2;
       const id = `burst-${bubbleElement.dataset.bubbleId}-${Date.now()}`;
+      const effectConfig = EFFECT_PARTICLE_CONFIG[effectIntensity];
 
-      setBursts((currentBursts) => [...currentBursts, { id, left, top }]);
+      setBursts((currentBursts) => [
+        ...currentBursts,
+        {
+          id,
+          left,
+          top,
+          particleCount: effectConfig.particleCount,
+          distance: effectConfig.distance,
+        },
+      ]);
       window.setTimeout(() => {
         setBursts((currentBursts) =>
           currentBursts.filter((burst) => burst.id !== id),
         );
       }, 520);
     },
-    [boardElement],
+    [boardElement, effectIntensity],
   );
 
   const triggerBubblePop = useCallback(
@@ -87,10 +112,18 @@ export function BubbleBoard() {
         return;
       }
 
+      if (soundEnabled) {
+        playBubblePopSound(volume);
+      }
+
+      if (vibrationEnabled) {
+        vibrateBubblePop();
+      }
+
       spawnBurst(bubbleElement);
       popBubble(bubbleId);
     },
-    [popBubble, spawnBurst],
+    [popBubble, soundEnabled, spawnBurst, vibrationEnabled, volume],
   );
 
   const handlePointerDown = (bubbleId: string, bubbleElement: HTMLElement) => {
@@ -134,9 +167,9 @@ export function BubbleBoard() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.48, ease: 'easeOut' }}
             >
-              {Array.from({ length: 6 }, (_, index) => {
-                const angle = (Math.PI * 2 * index) / 6;
-                const distance = 24 + index * 2;
+              {Array.from({ length: burst.particleCount }, (_, index) => {
+                const angle = (Math.PI * 2 * index) / burst.particleCount;
+                const distance = burst.distance + index * 2;
 
                 return (
                   <motion.span

@@ -1,28 +1,47 @@
+import { useState } from 'react';
 import { BubbleBoard } from './BubbleBoard';
 import { useBubbleStore } from '../../domains/bubble/bubble.store';
-import { INITIAL_SETTINGS } from '../../domains/settings/settings.constants';
 import { REWARD_RARITIES } from '../../domains/reward/reward.constants';
+import { useSettingsStore } from '../../domains/settings/settings.store';
+import { SettingsPanel } from '../settings/SettingsPanel';
 
 export function PlayScreen() {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const poppedCount = useBubbleStore((state) => state.poppedCount);
+  const soundEnabled = useSettingsStore((state) => state.soundEnabled);
+  const vibrationEnabled = useSettingsStore((state) => state.vibrationEnabled);
+  const effectIntensity = useSettingsStore((state) => state.effectIntensity);
 
   return (
     <main className="min-h-screen bg-[#f7fbff] text-ink">
-      <section className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-4 py-4 sm:px-6">
+      <section className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col px-4 py-4 sm:px-6">
         <header className="flex items-center justify-between gap-3">
           <div>
             <p className="text-sm font-semibold text-pop">TOKTOK</p>
             <h1 className="text-2xl font-bold sm:text-3xl">톡톡 플레이</h1>
           </div>
           <div className="flex gap-2">
-            <button className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold shadow-sm">
+            <button
+              type="button"
+              className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold shadow-sm"
+            >
               도감
             </button>
-            <button className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold shadow-sm">
+            <button
+              type="button"
+              className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold shadow-sm"
+              aria-expanded={isSettingsOpen}
+              onClick={() => setIsSettingsOpen((current) => !current)}
+            >
               설정
             </button>
           </div>
         </header>
+
+        <SettingsPanel
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+        />
 
         <BubbleBoard />
 
@@ -39,9 +58,9 @@ export function PlayScreen() {
         </footer>
 
         <aside className="sr-only">
-          기본 설정: 사운드 {INITIAL_SETTINGS.soundEnabled ? 'ON' : 'OFF'},
-          진동 {INITIAL_SETTINGS.vibrationEnabled ? 'ON' : 'OFF'}, 보상 등급{' '}
-          {REWARD_RARITIES.join(', ')}
+          현재 설정: 사운드 {soundEnabled ? 'ON' : 'OFF'}, 진동{' '}
+          {vibrationEnabled ? 'ON' : 'OFF'}, 이펙트 {effectIntensity}, 보상
+          등급 {REWARD_RARITIES.join(', ')}
         </aside>
       </section>
     </main>
