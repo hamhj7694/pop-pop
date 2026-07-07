@@ -13,9 +13,15 @@ function getChanceMultiplier(modifiers?: RewardChanceModifiers) {
   );
 }
 
-function pickRewardByRarity(rarity: RewardRarity): Reward | null {
+function pickRewardByRarity(
+  rarity: RewardRarity,
+  excludedRewardIds: Set<string>,
+): Reward | null {
   const rewards = SAMPLE_REWARDS.filter(
-    (reward) => reward.isActive && reward.rarity === rarity,
+    (reward) =>
+      reward.isActive &&
+      reward.rarity === rarity &&
+      !excludedRewardIds.has(reward.id),
   );
 
   if (rewards.length === 0) {
@@ -27,6 +33,7 @@ function pickRewardByRarity(rarity: RewardRarity): Reward | null {
 
 export function rollRandomReward(
   modifiers?: RewardChanceModifiers,
+  excludedRewardIds = new Set<string>(),
 ): Reward | null {
   const multiplier = getChanceMultiplier(modifiers);
 
@@ -34,7 +41,7 @@ export function rollRandomReward(
     const chance = REWARD_DROP_CHANCES[rarity] * multiplier;
 
     if (Math.random() <= chance) {
-      return pickRewardByRarity(rarity);
+      return pickRewardByRarity(rarity, excludedRewardIds);
     }
   }
 

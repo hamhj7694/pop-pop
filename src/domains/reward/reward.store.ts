@@ -62,7 +62,12 @@ export const useRewardStore = create<RewardState>((set) => ({
     modifiers,
     obtainedSource = 'random',
   }: TryRewardDropOptions) => {
-    const reward = rollRandomReward(modifiers);
+    const obtainedRewardIds = new Set(
+      useRewardStore
+        .getState()
+        .obtainedRewards.map((obtainedReward) => obtainedReward.reward.id),
+    );
+    const reward = rollRandomReward(modifiers, obtainedRewardIds);
 
     if (!reward) {
       return null;
@@ -73,6 +78,15 @@ export const useRewardStore = create<RewardState>((set) => ({
     set((state) => {
       const obtainedReward = createObtainedReward(reward, obtainedSource);
       createdDrop = createDrop(obtainedReward, x, y);
+      const alreadyObtained = state.obtainedRewards.some(
+        (currentReward) => currentReward.reward.id === reward.id,
+      );
+
+      if (alreadyObtained) {
+        createdDrop = null;
+
+        return {};
+      }
 
       return {
         obtainedRewards: [obtainedReward, ...state.obtainedRewards],

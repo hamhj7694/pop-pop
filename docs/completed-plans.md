@@ -62,6 +62,14 @@
 - 검증: `npm.cmd run lint`, `npm.cmd run build`, `npm.cmd run dev -- --host 127.0.0.1`
 - 비고: 사용자가 계속 터뜨릴 수 있도록 전체 판 리필 방식에서 개별 버블 재생성 방식으로 변경했다. 기존 5173 포트가 사용 중이라 확인용 dev server는 `http://127.0.0.1:5174/`로 기동 확인 후 종료했다.
 
+### 버블 가시성, 보상 확률, 중복 보상 조정
+
+- Phase: Phase 1/3 조정
+- 관련 TODO: 핵심 손맛 구현, 보상 루프 구현
+- 변경 파일: `src/features/play/BubbleBoard.tsx`, `src/domains/reward/reward.constants.ts`, `src/domains/reward/reward.engine.ts`, `src/domains/reward/reward.store.ts`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 버블 색상과 그림자를 진하게 조정해 배경과의 대비를 높였다. 보상 드랍 확률은 기존보다 낮췄고, 이미 수집한 보상 ID는 이후 랜덤 후보에서 제외해 수집 목록에 중복으로 쌓이지 않게 했다.
+
 ### Phase 1 기본 파티클 구현
 
 - Phase: Phase 1. 핵심 손맛 구현

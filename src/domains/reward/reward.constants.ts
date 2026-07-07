@@ -25,9 +25,9 @@ export const REWARD_RARITY_STYLES: Record<
 };
 
 export const REWARD_DROP_CHANCES: Record<RewardRarity, number> = {
-  common: 0.16,
-  rare: 0.032,
-  super_rare: 0.004,
+  common: 0.04,
+  rare: 0.008,
+  super_rare: 0.001,
 };
 
 export const SAMPLE_REWARDS: Reward[] = [

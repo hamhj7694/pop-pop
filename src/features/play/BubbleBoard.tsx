@@ -180,7 +180,7 @@ export function BubbleBoard() {
   return (
     <section
       ref={setBoardRef}
-      className="relative mt-5 grid min-h-[420px] flex-1 select-none place-items-center overflow-hidden rounded-lg border border-sky-100 bg-white/80 p-3 shadow-sm sm:min-h-[520px] sm:p-5"
+      className="relative mt-5 grid min-h-[420px] flex-1 select-none place-items-center overflow-hidden rounded-lg border border-sky-200 bg-[#eaf7ff] p-3 shadow-sm sm:min-h-[520px] sm:p-5"
       onPointerMove={handlePointerMove}
       aria-label="뽁뽁이 플레이 영역"
     >
@@ -234,11 +234,11 @@ export function BubbleBoard() {
               data-bubble-id={bubble.id}
               className={[
                 'relative aspect-square min-h-11 rounded-full border transition duration-150',
-                'shadow-[inset_0_6px_14px_rgba(255,255,255,0.9),0_8px_18px_rgba(59,130,246,0.12)]',
+                'shadow-[inset_0_7px_14px_rgba(255,255,255,0.72),inset_0_-8px_16px_rgba(14,116,144,0.18),0_8px_18px_rgba(8,145,178,0.22)]',
                 'focus:outline-none focus-visible:ring-2 focus-visible:ring-pop focus-visible:ring-offset-2',
                 isPopped
-                  ? 'scale-75 border-slate-100 bg-slate-100 opacity-35 shadow-none'
-                  : 'border-sky-100 bg-bubble hover:scale-95 active:scale-90',
+                  ? 'scale-75 border-slate-200 bg-slate-200 opacity-35 shadow-none'
+                  : 'border-cyan-400 bg-[#76d7f2] hover:scale-95 active:scale-90',
               ].join(' ')}
               disabled={isPopped}
               aria-label={`뽁뽁이 ${index + 1}`}
@@ -253,7 +253,7 @@ export function BubbleBoard() {
               }}
             >
               {!isPopped && (
-                <span className="absolute left-[24%] top-[18%] h-[24%] w-[34%] rounded-full bg-white/70 blur-[1px]" />
+                <span className="absolute left-[22%] top-[16%] h-[25%] w-[36%] rounded-full bg-white/75 blur-[1px]" />
               )}
             </button>
           );
