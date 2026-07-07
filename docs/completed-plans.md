@@ -171,3 +171,12 @@
 - 변경 파일: `src/features/settings/SettingsPanel.tsx`, `src/features/collection/CollectionOverlay.tsx`, `src/features/reward/TodayFindsButton.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 설정과 수집함에 dialog 역할, 제목 연결, ESC 닫기, 선택 상태 aria 속성을 추가했다. 설정 문구도 깨진 한글을 정상 문구로 정리했다.
+
+### 뽁뽁이 드래그 입력 안정화
+
+- 완료일: 2026-07-07
+- Phase: Phase 1/8 조정
+- 관련 TODO: 드래그 중 보상/문구 오버레이 간섭 방지
+- 변경 파일: `src/features/play/BubbleBoard.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 드래그 시작 시 버블 보드가 pointer capture를 잡도록 변경하고, 이동 중 `elementsFromPoint`로 상자/토스트 아래의 뽁뽁이도 찾도록 보강했다. 모바일 터치 제스처 간섭을 줄이기 위해 보드에 `touch-none`을 추가했다.

@@ -70,9 +70,17 @@ function getBubbleElementFromPoint(
   clientX: number,
   clientY: number,
 ): HTMLElement | null {
-  const element = document.elementFromPoint(clientX, clientY);
+  const elements = document.elementsFromPoint(clientX, clientY);
 
-  return element?.closest<HTMLElement>('[data-bubble-id]') ?? null;
+  for (const element of elements) {
+    const bubbleElement = element.closest<HTMLElement>('[data-bubble-id]');
+
+    if (bubbleElement) {
+      return bubbleElement;
+    }
+  }
+
+  return null;
 }
 
 export function BubbleBoard() {
@@ -257,8 +265,13 @@ export function BubbleBoard() {
     ],
   );
 
-  const handlePointerDown = (bubbleId: string, bubbleElement: HTMLElement) => {
+  const handlePointerDown = (
+    event: PointerEvent<HTMLButtonElement>,
+    bubbleId: string,
+    bubbleElement: HTMLElement,
+  ) => {
     setIsDragging(true);
+    boardElement?.setPointerCapture(event.pointerId);
     triggerBubblePop(bubbleId, bubbleElement);
   };
 
@@ -283,7 +296,7 @@ export function BubbleBoard() {
     <section
       ref={setBoardRef}
       className={[
-        'relative mt-5 grid min-h-[420px] flex-1 select-none place-items-center overflow-hidden rounded-lg border p-3 shadow-sm transition-colors duration-300 sm:min-h-[520px] sm:p-5',
+        'relative mt-5 grid min-h-[420px] flex-1 touch-none select-none place-items-center overflow-hidden rounded-lg border p-3 shadow-sm transition-colors duration-300 sm:min-h-[520px] sm:p-5',
         isFeverActive
           ? 'border-amber-300 bg-[#fff1c7]'
           : 'border-sky-200 bg-[#eaf7ff]',
@@ -394,7 +407,7 @@ export function BubbleBoard() {
               aria-label={`뽁뽁이 ${index + 1}`}
               aria-pressed={isPopped}
               onPointerDown={(event) =>
-                handlePointerDown(bubble.id, event.currentTarget)
+                handlePointerDown(event, bubble.id, event.currentTarget)
               }
               onPointerEnter={(event) => {
                 if (isDragging && event.currentTarget instanceof HTMLElement) {
