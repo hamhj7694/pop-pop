@@ -8,7 +8,6 @@ import { REWARD_RARITIES } from '../../domains/reward/reward.constants';
 import { useSettingsStore } from '../../domains/settings/settings.store';
 import { CollectionOverlay } from '../collection/CollectionOverlay';
 import { ComboFeedback } from '../combo/ComboFeedback';
-import { FeverStatus } from '../fever/FeverStatus';
 import { RewardDropLayer } from '../reward/RewardDropLayer';
 import { RewardRevealToast } from '../reward/RewardRevealToast';
 import { TodayFindsButton } from '../reward/TodayFindsButton';
@@ -71,7 +70,6 @@ export function PlayScreen() {
         <RewardDropLayer />
         <RewardRevealToast />
         <ComboFeedback />
-        <FeverStatus />
 
         <BubbleBoard />
 
@@ -84,7 +82,7 @@ export function PlayScreen() {
           </div>
           {isFeverActive && (
             <div className="rounded-md bg-amber-100 px-3 py-2 text-sm font-black text-amber-900 shadow-sm">
-              Fever {remainingFeverSeconds}s
+              피버타임 {remainingFeverSeconds}s
             </div>
           )}
           <div className="rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm">
