@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { REFILL_REMAINING_RATIO } from './bubble.constants';
+import { BUBBLE_RESPAWN_DELAY_MS } from './bubble.constants';
 import type { Bubble } from './bubble.types';
 import { createBubbles } from './bubble.utils';
 
@@ -9,6 +9,7 @@ interface BubbleState {
   poppedCount: number;
   initializeBoard: (count: number) => void;
   popBubble: (bubbleId: string) => void;
+  respawnBubble: (bubbleId: string) => void;
   resetBoard: (count?: number) => void;
 }
 
@@ -45,24 +46,25 @@ export const useBubbleStore = create<BubbleState>((set, get) => ({
       const nextBubbles: Bubble[] = state.bubbles.map((bubble) =>
         bubble.id === bubbleId ? { ...bubble, status: 'popped' } : bubble,
       );
-      const poppedCount = state.poppedCount + 1;
-      const remainingCount = nextBubbles.length - poppedCount;
-      const shouldRefill =
-        remainingCount <= Math.ceil(nextBubbles.length * REFILL_REMAINING_RATIO);
-
-      if (!shouldRefill) {
-        return {
-          bubbles: nextBubbles,
-          poppedCount,
-        };
-      }
-
-      const nextVersion = state.boardVersion + 1;
 
       return {
-        boardVersion: nextVersion,
-        bubbles: createBubbles(nextBubbles.length, nextVersion),
-        poppedCount: 0,
+        bubbles: nextBubbles,
+        poppedCount: state.poppedCount + 1,
+      };
+    });
+
+    window.setTimeout(() => {
+      get().respawnBubble(bubbleId);
+    }, BUBBLE_RESPAWN_DELAY_MS);
+  },
+  respawnBubble: (bubbleId) => {
+    set((state) => {
+      return {
+        bubbles: state.bubbles.map((bubble) =>
+          bubble.id === bubbleId && bubble.status === 'popped'
+            ? { ...bubble, status: 'ready' }
+            : bubble,
+        ),
       };
     });
   },

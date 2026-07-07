@@ -49,10 +49,18 @@
 ### Phase 1 반응형 버블 보드와 터뜨리기 입력
 
 - Phase: Phase 1. 핵심 손맛 구현
-- 관련 TODO: 반응형 버블 배치 알고리즘 구현, 버블 상태 모델 구현, 클릭/터치 터뜨리기 구현, 마우스 드래그 연속 터뜨리기 구현, 모바일 터치 드래그 연속 터뜨리기 구현, 이미 터진 버블 중복 처리 방지, 기본 눌림/터짐 애니메이션 구현, 남은 버블 수 기준 새 판 생성 구현
+- 관련 TODO: 반응형 버블 배치 알고리즘 구현, 버블 상태 모델 구현, 클릭/터치 터뜨리기 구현, 마우스 드래그 연속 터뜨리기 구현, 모바일 터치 드래그 연속 터뜨리기 구현, 이미 터진 버블 중복 처리 방지, 기본 눌림/터짐 애니메이션 구현, 터진 버블 자동 재생성 구현
 - 변경 파일: `src/app/App.tsx`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `src/domains/bubble/**`, `src/shared/hooks/useElementSize.ts`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`, `npm.cmd run dev -- --host 127.0.0.1`
 - 비고: 파티클 구현과 데스크톱/모바일 실제 화면 크기별 수동 검증은 남은 Phase 1 작업으로 유지한다. dev server는 `http://127.0.0.1:5173/`로 기동 확인 후 종료했다.
+
+### 버블 자동 재생성 방식 수정
+
+- Phase: Phase 1. 핵심 손맛 구현
+- 관련 TODO: 터진 버블 자동 재생성 구현
+- 변경 파일: `src/domains/bubble/bubble.constants.ts`, `src/domains/bubble/bubble.store.ts`, `TODO.md`, `docs/development-plan.md`, `docs/completed-plans.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`, `npm.cmd run dev -- --host 127.0.0.1`
+- 비고: 사용자가 계속 터뜨릴 수 있도록 전체 판 리필 방식에서 개별 버블 재생성 방식으로 변경했다. 기존 5173 포트가 사용 중이라 확인용 dev server는 `http://127.0.0.1:5174/`로 기동 확인 후 종료했다.
 
 ### Phase 1 기본 파티클 구현
 
