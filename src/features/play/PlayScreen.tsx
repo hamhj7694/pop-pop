@@ -10,6 +10,7 @@ import { CollectionOverlay } from '../collection/CollectionOverlay';
 import { ComboFeedback } from '../combo/ComboFeedback';
 import { FeverStatus } from '../fever/FeverStatus';
 import { RewardDropLayer } from '../reward/RewardDropLayer';
+import { RewardRevealToast } from '../reward/RewardRevealToast';
 import { TodayFindsButton } from '../reward/TodayFindsButton';
 import { TodayFindsOverlay } from '../reward/TodayFindsOverlay';
 import { SettingsPanel } from '../settings/SettingsPanel';
@@ -68,6 +69,7 @@ export function PlayScreen() {
           onClose={() => setIsSettingsOpen(false)}
         />
         <RewardDropLayer />
+        <RewardRevealToast />
         <ComboFeedback />
         <FeverStatus />
 

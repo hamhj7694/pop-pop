@@ -25,15 +25,9 @@ function getDropChance(
   return REWARD_DROP_CHANCES[rarity] * multiplier;
 }
 
-function pickRewardByRarity(
-  rarity: RewardRarity,
-  excludedRewardIds: Set<string>,
-): Reward | null {
+function pickRewardByRarity(rarity: RewardRarity): Reward | null {
   const rewards = SAMPLE_REWARDS.filter(
-    (reward) =>
-      reward.isActive &&
-      reward.rarity === rarity &&
-      !excludedRewardIds.has(reward.id),
+    (reward) => reward.isActive && reward.rarity === rarity,
   );
 
   if (rewards.length === 0) {
@@ -45,7 +39,6 @@ function pickRewardByRarity(
 
 export function rollRandomReward(
   modifiers?: RewardChanceModifiers,
-  excludedRewardIds = new Set<string>(),
 ): Reward | null {
   const multiplier = getChanceMultiplier(modifiers);
 
@@ -53,7 +46,7 @@ export function rollRandomReward(
     const chance = getDropChance(rarity, modifiers, multiplier);
 
     if (Math.random() <= chance) {
-      return pickRewardByRarity(rarity, excludedRewardIds);
+      return pickRewardByRarity(rarity);
     }
   }
 

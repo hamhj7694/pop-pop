@@ -19,9 +19,12 @@ interface TryRewardDropOptions {
 interface RewardState {
   obtainedRewards: ObtainedReward[];
   activeDrops: RewardDrop[];
+  revealedReward: ObtainedReward | null;
   selectedRewardId: string | null;
   tryRewardDrop: (options: TryRewardDropOptions) => RewardDrop | null;
   dismissDrop: (dropId: string) => void;
+  claimDrop: (dropId: string) => ObtainedReward | null;
+  clearRevealedReward: () => void;
   markAllSeen: () => void;
   selectReward: (obtainedRewardId: string | null) => void;
 }
@@ -40,22 +43,26 @@ function createObtainedReward(
 }
 
 function createDrop(
-  obtainedReward: ObtainedReward,
+  reward: Reward,
   x: number,
   y: number,
+  obtainedSource: ObtainedSource,
 ): RewardDrop {
   return {
-    id: `drop-${obtainedReward.id}`,
-    obtainedRewardId: obtainedReward.id,
-    reward: obtainedReward.reward,
+    id: `drop-${reward.id}-${crypto.randomUUID()}`,
+    reward,
     x,
     y,
+    containerType: Math.random() > 0.45 ? 'gift' : 'card',
+    obtainedSource,
+    createdAt: new Date().toISOString(),
   };
 }
 
 export const useRewardStore = create<RewardState>((set) => ({
   obtainedRewards: [],
   activeDrops: [],
+  revealedReward: null,
   selectedRewardId: null,
   tryRewardDrop: ({
     x,
@@ -63,44 +70,21 @@ export const useRewardStore = create<RewardState>((set) => ({
     modifiers,
     obtainedSource = 'random',
   }: TryRewardDropOptions) => {
-    const obtainedRewardIds = new Set(
-      useRewardStore
-        .getState()
-        .obtainedRewards.map((obtainedReward) => obtainedReward.reward.id),
-    );
-    const reward = rollRandomReward(modifiers, obtainedRewardIds);
+    const reward = rollRandomReward(modifiers);
 
     if (!reward) {
       return null;
     }
 
-    let createdDrop: RewardDrop | null = null;
+    const createdDrop = createDrop(reward, x, y, obtainedSource);
 
     set((state) => {
-      const obtainedReward = createObtainedReward(reward, obtainedSource);
-      createdDrop = createDrop(obtainedReward, x, y);
-      const alreadyObtained = state.obtainedRewards.some(
-        (currentReward) => currentReward.reward.id === reward.id,
-      );
-
-      if (alreadyObtained) {
-        createdDrop = null;
-
-        return {};
-      }
+      const nextDrops = [...state.activeDrops, createdDrop].slice(-7);
 
       return {
-        obtainedRewards: [obtainedReward, ...state.obtainedRewards],
-        activeDrops: [...state.activeDrops, createdDrop],
-        selectedRewardId: state.selectedRewardId ?? obtainedReward.id,
+        activeDrops: nextDrops,
       };
     });
-
-    if (createdDrop) {
-      useCollectionStore
-        .getState()
-        .saveReward(reward, new Date().toISOString(), obtainedSource);
-    }
 
     return createdDrop;
   },
@@ -108,6 +92,43 @@ export const useRewardStore = create<RewardState>((set) => ({
     set((state) => ({
       activeDrops: state.activeDrops.filter((drop) => drop.id !== dropId),
     }));
+  },
+  claimDrop: (dropId) => {
+    const drop = useRewardStore
+      .getState()
+      .activeDrops.find((currentDrop) => currentDrop.id === dropId);
+
+    if (!drop) {
+      return null;
+    }
+
+    const obtainedReward = createObtainedReward(
+      drop.reward,
+      drop.obtainedSource,
+    );
+
+    set((state) => ({
+      obtainedRewards: [obtainedReward, ...state.obtainedRewards],
+      activeDrops: state.activeDrops.filter(
+        (currentDrop) => currentDrop.id !== dropId,
+      ),
+      revealedReward:
+        obtainedReward.reward.contentType === 'text' ? obtainedReward : null,
+      selectedRewardId: state.selectedRewardId ?? obtainedReward.id,
+    }));
+
+    useCollectionStore
+      .getState()
+      .saveReward(
+        obtainedReward.reward,
+        obtainedReward.obtainedAt,
+        obtainedReward.obtainedSource,
+      );
+
+    return obtainedReward;
+  },
+  clearRevealedReward: () => {
+    set({ revealedReward: null });
   },
   markAllSeen: () => {
     set((state) => ({

@@ -135,3 +135,12 @@
 - 변경 파일: `src/domains/collection/**`, `src/features/collection/CollectionOverlay.tsx`, `src/domains/reward/reward.store.ts`, `src/features/reward/TodayFindsOverlay.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 도감은 `toktok-collection` localStorage에 저장한다. 오늘 주운 것들은 세션 획득 목록으로 유지하고, 도감은 장기 수집률과 미획득 항목을 보여주는 별도 오버레이로 분리했다.
+
+### 보상 드롭과 랜덤 기분 이펙트 재설계
+
+- 완료일: 2026-07-07
+- Phase: Phase 3/5 조정
+- 관련 TODO: 중복 보상 드롭 허용과 도감 최초 1회 저장 분리, 선물상자/카드 pending 드롭과 클릭 획득 흐름 구현, 문구 보상 상단 오버레이 구현, 피버타임 중 랜덤 기분 이펙트와 보상 드롭 빈도 강화
+- 변경 파일: `src/domains/reward/**`, `src/features/reward/**`, `src/features/play/BubbleBoard.tsx`, `src/features/play/PlayScreen.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 기본 터짐 효과는 유지했다. 추가 기분 이펙트는 낮은 확률로 발동하고 피버 중 더 자주 나온다. 보상은 즉시 저장하지 않고 선물상자/카드가 바닥에 쌓인 뒤 사용자가 클릭하면 오늘 주운 것들과 도감에 반영된다.

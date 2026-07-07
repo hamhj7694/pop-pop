@@ -34,8 +34,10 @@ export interface ObtainedReward {
 
 export interface RewardDrop {
   id: string;
-  obtainedRewardId: string;
   reward: Reward;
   x: number;
   y: number;
+  containerType: 'gift' | 'card';
+  obtainedSource: ObtainedSource;
+  createdAt: string;
 }

@@ -34,11 +34,38 @@ interface PopBurst {
   isFever: boolean;
 }
 
+interface DelightBurst {
+  id: string;
+  left: number;
+  top: number;
+  kind: 'heart' | 'star' | 'fanfare' | 'sparkle';
+  isFever: boolean;
+}
+
 const EFFECT_PARTICLE_CONFIG = {
   low: { particleCount: 3, distance: 18 },
   normal: { particleCount: 6, distance: 24 },
   high: { particleCount: 9, distance: 30 },
 } as const;
+
+const DELIGHT_EFFECTS: Array<DelightBurst['kind']> = [
+  'heart',
+  'star',
+  'fanfare',
+  'sparkle',
+];
+
+const DELIGHT_TRIGGER_CHANCE = {
+  normal: 0.12,
+  fever: 0.34,
+} as const;
+
+const DELIGHT_EFFECT_SYMBOLS: Record<DelightBurst['kind'], string[]> = {
+  heart: ['♥', '♡', '♥'],
+  star: ['★', '✦', '★'],
+  fanfare: ['POP', 'WOW', 'POP'],
+  sparkle: ['✦', '·', '✦'],
+};
 
 function getBubbleElementFromPoint(
   clientX: number,
@@ -53,6 +80,7 @@ export function BubbleBoard() {
   const [boardElement, setBoardElement] = useState<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [bursts, setBursts] = useState<PopBurst[]>([]);
+  const [delightBursts, setDelightBursts] = useState<DelightBurst[]>([]);
   const size = useElementSize(boardElement);
   const bubbles = useBubbleStore((state) => state.bubbles);
   const poppedCount = useBubbleStore((state) => state.poppedCount);
@@ -124,6 +152,48 @@ export function BubbleBoard() {
     [boardElement, effectIntensity],
   );
 
+  const maybeSpawnDelightBurst = useCallback(
+    (bubbleElement: HTMLElement, isCurrentFeverActive: boolean) => {
+      if (!boardElement) {
+        return;
+      }
+
+      const chance = isCurrentFeverActive
+        ? DELIGHT_TRIGGER_CHANCE.fever
+        : DELIGHT_TRIGGER_CHANCE.normal;
+
+      if (Math.random() > chance) {
+        return;
+      }
+
+      const boardRect = boardElement.getBoundingClientRect();
+      const bubbleRect = bubbleElement.getBoundingClientRect();
+      const left = bubbleRect.left - boardRect.left + bubbleRect.width / 2;
+      const top = bubbleRect.top - boardRect.top + bubbleRect.height / 2;
+      const kind =
+        DELIGHT_EFFECTS[Math.floor(Math.random() * DELIGHT_EFFECTS.length)];
+      const id = `delight-${bubbleElement.dataset.bubbleId}-${Date.now()}`;
+
+      setDelightBursts((currentBursts) => [
+        ...currentBursts,
+        {
+          id,
+          left,
+          top,
+          kind,
+          isFever: isCurrentFeverActive,
+        },
+      ]);
+
+      window.setTimeout(() => {
+        setDelightBursts((currentBursts) =>
+          currentBursts.filter((burst) => burst.id !== id),
+        );
+      }, 900);
+    },
+    [boardElement],
+  );
+
   const triggerBubblePop = useCallback(
     (bubbleId: string, bubbleElement: HTMLElement) => {
       const bubble = useBubbleStore
@@ -149,6 +219,7 @@ export function BubbleBoard() {
       }
 
       spawnBurst(bubbleElement);
+      maybeSpawnDelightBurst(bubbleElement, isRewardFeverActive);
 
       const bubbleRect = bubbleElement.getBoundingClientRect();
       const rewardDrop = tryRewardDrop({
@@ -184,6 +255,7 @@ export function BubbleBoard() {
       tryStartFever,
       soundEnabled,
       spawnBurst,
+      maybeSpawnDelightBurst,
       tryRewardDrop,
       vibrationEnabled,
       volume,
@@ -254,6 +326,44 @@ export function BubbleBoard() {
                     }}
                     transition={{ duration: 0.42, ease: 'easeOut' }}
                   />
+                );
+              })}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <AnimatePresence>
+          {delightBursts.map((burst) => (
+            <motion.div
+              key={burst.id}
+              className="absolute"
+              style={{ left: burst.left, top: burst.top }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: [0, 1, 0], scale: [0.8, 1.18, 1] }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.84, ease: 'easeOut' }}
+            >
+              {DELIGHT_EFFECT_SYMBOLS[burst.kind].map((symbol, index) => {
+                const direction = index - 1;
+
+                return (
+                  <motion.span
+                    key={`${symbol}-${index}`}
+                    className={[
+                      'absolute text-sm font-black drop-shadow-sm',
+                      burst.isFever ? 'text-amber-500' : 'text-pop',
+                    ].join(' ')}
+                    initial={{ x: 0, y: 0, rotate: 0 }}
+                    animate={{
+                      x: direction * 24,
+                      y: -34 - index * 8,
+                      rotate: direction * 12,
+                    }}
+                    transition={{ duration: 0.78, ease: 'easeOut' }}
+                  >
+                    {symbol}
+                  </motion.span>
                 );
               })}
             </motion.div>
