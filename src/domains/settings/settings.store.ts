@@ -8,6 +8,7 @@ interface SettingsState extends UserSettings {
   setVibrationEnabled: (vibrationEnabled: boolean) => void;
   setVolume: (volume: number) => void;
   setEffectIntensity: (effectIntensity: EffectIntensity) => void;
+  setSelectedThemeId: (selectedThemeId: string) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -18,6 +19,7 @@ export const useSettingsStore = create<SettingsState>()(
       setVibrationEnabled: (vibrationEnabled) => set({ vibrationEnabled }),
       setVolume: (volume) => set({ volume }),
       setEffectIntensity: (effectIntensity) => set({ effectIntensity }),
+      setSelectedThemeId: (selectedThemeId) => set({ selectedThemeId }),
     }),
     {
       name: 'toktok-settings',

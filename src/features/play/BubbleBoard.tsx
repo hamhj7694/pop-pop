@@ -13,6 +13,7 @@ import {
 import { useFeverStore } from '../../domains/fever/fever.store';
 import { useRewardStore } from '../../domains/reward/reward.store';
 import { useSettingsStore } from '../../domains/settings/settings.store';
+import { getBubbleTheme } from '../../domains/theme/theme.constants';
 import {
   playBubblePopSound,
   playFeverStartSound,
@@ -101,6 +102,8 @@ export function BubbleBoard() {
   const vibrationEnabled = useSettingsStore((state) => state.vibrationEnabled);
   const volume = useSettingsStore((state) => state.volume);
   const effectIntensity = useSettingsStore((state) => state.effectIntensity);
+  const selectedThemeId = useSettingsStore((state) => state.selectedThemeId);
+  const theme = getBubbleTheme(selectedThemeId);
   const layout = useMemo(
     () => calculateBubbleLayout(size.width, size.height),
     [size.width, size.height],
@@ -295,12 +298,15 @@ export function BubbleBoard() {
   return (
     <section
       ref={setBoardRef}
-      className={[
-        'relative mt-5 grid min-h-[420px] flex-1 touch-none select-none place-items-center overflow-hidden rounded-lg border p-3 shadow-sm transition-colors duration-300 sm:min-h-[520px] sm:p-5',
-        isFeverActive
-          ? 'border-amber-300 bg-[#fff1c7]'
-          : 'border-sky-200 bg-[#eaf7ff]',
-      ].join(' ')}
+      className="relative mt-5 grid min-h-[420px] flex-1 touch-none select-none place-items-center overflow-hidden rounded-lg border p-3 shadow-sm transition-colors duration-300 sm:min-h-[520px] sm:p-5"
+      style={{
+        backgroundColor: isFeverActive
+          ? theme.colors.feverBoardBackground
+          : theme.colors.boardBackground,
+        borderColor: isFeverActive
+          ? theme.colors.feverBoardBorder
+          : theme.colors.boardBorder,
+      }}
       onPointerMove={handlePointerMove}
       aria-label="뽁뽁이 플레이 영역"
     >
@@ -325,8 +331,12 @@ export function BubbleBoard() {
                     key={index}
                     className={[
                       'absolute h-1.5 w-1.5 rounded-full shadow-sm',
-                      burst.isFever ? 'bg-amber-400' : 'bg-pop',
                     ].join(' ')}
+                    style={{
+                      backgroundColor: burst.isFever
+                        ? theme.colors.feverParticle
+                        : theme.colors.particle,
+                    }}
                     initial={{ x: 0, y: 0 }}
                     animate={{
                       x: Math.cos(angle) * distance,
@@ -360,8 +370,12 @@ export function BubbleBoard() {
                     key={`${symbol}-${index}`}
                     className={[
                       'absolute text-sm font-black drop-shadow-sm',
-                      burst.isFever ? 'text-amber-500' : 'text-pop',
                     ].join(' ')}
+                    style={{
+                      color: burst.isFever
+                        ? theme.colors.feverParticle
+                        : theme.colors.particle,
+                    }}
                     initial={{ x: 0, y: 0, rotate: 0 }}
                     animate={{
                       x: direction * 24,
@@ -395,14 +409,24 @@ export function BubbleBoard() {
               data-bubble-id={bubble.id}
               className={[
                 'relative aspect-square min-h-11 rounded-full border transition duration-150',
-                'shadow-[inset_0_7px_14px_rgba(255,255,255,0.72),inset_0_-8px_16px_rgba(14,116,144,0.18),0_8px_18px_rgba(8,145,178,0.22)]',
                 'focus:outline-none focus-visible:ring-2 focus-visible:ring-pop focus-visible:ring-offset-2',
                 isPopped
-                  ? 'scale-75 border-slate-200 bg-slate-200 opacity-35 shadow-none'
-                  : isFeverActive
-                    ? 'border-amber-400 bg-[#ffd166] hover:scale-95 active:scale-90'
-                    : 'border-cyan-400 bg-[#76d7f2] hover:scale-95 active:scale-90',
+                  ? 'scale-75 opacity-35 shadow-none'
+                  : 'hover:scale-95 active:scale-90',
               ].join(' ')}
+              style={{
+                backgroundColor: isPopped
+                  ? theme.colors.poppedBackground
+                  : isFeverActive
+                    ? theme.colors.feverBubbleBackground
+                    : theme.colors.bubbleBackground,
+                borderColor: isPopped
+                  ? theme.colors.poppedBorder
+                  : isFeverActive
+                    ? theme.colors.feverBubbleBorder
+                    : theme.colors.bubbleBorder,
+                boxShadow: isPopped ? 'none' : theme.colors.bubbleShadow,
+              }}
               disabled={isPopped}
               aria-label={`뽁뽁이 ${index + 1}`}
               aria-pressed={isPopped}
@@ -416,7 +440,10 @@ export function BubbleBoard() {
               }}
             >
               {!isPopped && (
-                <span className="absolute left-[22%] top-[16%] h-[25%] w-[36%] rounded-full bg-white/75 blur-[1px]" />
+                <span
+                  className="absolute left-[22%] top-[16%] h-[25%] w-[36%] rounded-full blur-[1px]"
+                  style={{ backgroundColor: theme.colors.bubbleHighlight }}
+                />
               )}
             </button>
           );

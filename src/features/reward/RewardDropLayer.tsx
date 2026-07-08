@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRewardStore } from '../../domains/reward/reward.store';
+import { useSettingsStore } from '../../domains/settings/settings.store';
+import { getBubbleTheme } from '../../domains/theme/theme.constants';
 
 function getDropIdFromPoint(clientX: number, clientY: number) {
   const elements = document.elementsFromPoint(clientX, clientY);
@@ -22,6 +24,8 @@ export function RewardDropLayer() {
   const collectedDropIds = useRef(new Set<string>());
   const activeDrops = useRewardStore((state) => state.activeDrops);
   const claimDrop = useRewardStore((state) => state.claimDrop);
+  const selectedThemeId = useSettingsStore((state) => state.selectedThemeId);
+  const theme = getBubbleTheme(selectedThemeId);
 
   const claimDropOnce = (dropId: string | null) => {
     if (!dropId || collectedDropIds.current.has(dropId)) {
@@ -81,10 +85,16 @@ export function RewardDropLayer() {
               type="button"
               data-reward-drop-id={drop.id}
               className={[
-                'pointer-events-auto absolute grid h-12 w-12 touch-none place-items-center rounded-md border border-amber-300 bg-amber-50 text-[11px] font-black text-amber-950 shadow-lg',
+                'pointer-events-auto absolute grid h-12 w-12 touch-none place-items-center rounded-md border text-[11px] font-black shadow-lg',
                 'focus:outline-none focus-visible:ring-2 focus-visible:ring-pop focus-visible:ring-offset-2',
               ].join(' ')}
-              style={{ left: drop.x, top: drop.y }}
+              style={{
+                left: drop.x,
+                top: drop.y,
+                backgroundColor: theme.colors.boxBackground,
+                borderColor: theme.colors.boxBorder,
+                color: theme.colors.boxText,
+              }}
               initial={{ opacity: 0, scale: 0.72, x: '-50%', y: '-50%' }}
               animate={{
                 opacity: 1,
@@ -101,6 +111,7 @@ export function RewardDropLayer() {
               <span
                 aria-hidden="true"
                 className="grid h-8 w-8 place-items-center rounded border border-amber-400 bg-white/75 leading-none shadow-inner"
+                style={{ borderColor: theme.colors.boxBorder }}
               >
                 BOX
               </span>

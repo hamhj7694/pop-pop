@@ -1,6 +1,10 @@
 import { useEffect } from 'react';
 import type { EffectIntensity } from '../../domains/settings/settings.types';
 import { useSettingsStore } from '../../domains/settings/settings.store';
+import {
+  BUBBLE_THEMES,
+  getBubbleTheme,
+} from '../../domains/theme/theme.constants';
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -18,6 +22,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const vibrationEnabled = useSettingsStore((state) => state.vibrationEnabled);
   const volume = useSettingsStore((state) => state.volume);
   const effectIntensity = useSettingsStore((state) => state.effectIntensity);
+  const selectedThemeId = useSettingsStore((state) => state.selectedThemeId);
   const setSoundEnabled = useSettingsStore((state) => state.setSoundEnabled);
   const setVibrationEnabled = useSettingsStore(
     (state) => state.setVibrationEnabled,
@@ -26,6 +31,10 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const setEffectIntensity = useSettingsStore(
     (state) => state.setEffectIntensity,
   );
+  const setSelectedThemeId = useSettingsStore(
+    (state) => state.setSelectedThemeId,
+  );
+  const activeThemeId = getBubbleTheme(selectedThemeId).id;
 
   useEffect(() => {
     if (!isOpen) {
@@ -129,6 +138,41 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                   onChange={() => setEffectIntensity(option.value)}
                 />
                 {option.label}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset className="rounded-md border border-slate-100 p-3">
+          <legend className="px-1 font-semibold">뽁뽁이 테마</legend>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            {BUBBLE_THEMES.map((theme) => (
+              <label
+                key={theme.id}
+                className={[
+                  'cursor-pointer rounded-md border p-2 transition',
+                  activeThemeId === theme.id
+                    ? 'border-pop bg-pink-50 text-ink'
+                    : 'border-slate-200 bg-white text-slate-600',
+                ].join(' ')}
+              >
+                <input
+                  type="radio"
+                  name="selectedThemeId"
+                  className="sr-only"
+                  checked={activeThemeId === theme.id}
+                  onChange={() => setSelectedThemeId(theme.id)}
+                />
+                <span className="block text-sm font-bold">{theme.name}</span>
+                <span className="mt-2 flex gap-1" aria-hidden="true">
+                  {theme.swatches.map((swatch) => (
+                    <span
+                      key={swatch}
+                      className="h-5 flex-1 rounded-sm border border-black/10"
+                      style={{ backgroundColor: swatch }}
+                    />
+                  ))}
+                </span>
               </label>
             ))}
           </div>

@@ -216,3 +216,12 @@
 - 변경 파일: `src/features/reward/RewardDropLayer.tsx`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 상자에서 시작한 포인터 입력만 줍기 모드로 처리한다. 드래그 중 포인터 아래의 상자를 찾아 한 번씩만 개봉하고, 뽁뽁이 보드에서 시작한 드래그는 기존 터뜨리기 흐름을 유지한다.
+
+### 뽁뽁이 테마 선택 기반 구현
+
+- 완료일: 2026-07-08
+- Phase: Phase 9. 테마와 콘텐츠 확장
+- 관련 TODO: 뽁뽁이 테마 데이터 모델 설계, 기본 테마 세트 추가, 테마 선택 UI 구현, 선택한 테마를 로컬 설정에 저장, 테마별 버블 색상/배경/파티클/상자 스타일 적용, 피버타임 연출과 선택 테마가 충돌하지 않도록 시각 우선순위 정리
+- 변경 파일: `src/domains/theme/**`, `src/domains/settings/**`, `src/features/settings/SettingsPanel.tsx`, `src/features/play/PlayScreen.tsx`, `src/features/play/BubbleBoard.tsx`, `src/features/reward/RewardDropLayer.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 스카이 팝, 젤리 민트, 캔디 팝, 나이트 글로우 4개 기본 테마를 추가했다. 설정 패널에서 테마를 선택하면 localStorage에 저장되고, 화면 배경, 보드, 버블, 파티클, 상자, 피버타임 색상이 즉시 반영된다.

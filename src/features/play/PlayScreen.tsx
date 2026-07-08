@@ -5,6 +5,7 @@ import { useComboStore } from '../../domains/combo/combo.store';
 import { useFeverStore } from '../../domains/fever/fever.store';
 import { REWARD_RARITIES } from '../../domains/reward/reward.constants';
 import { useSettingsStore } from '../../domains/settings/settings.store';
+import { getBubbleTheme } from '../../domains/theme/theme.constants';
 import { CollectionOverlay } from '../collection/CollectionOverlay';
 import { ComboFeedback } from '../combo/ComboFeedback';
 import { RewardDropLayer } from '../reward/RewardDropLayer';
@@ -23,13 +24,18 @@ export function PlayScreen() {
   const soundEnabled = useSettingsStore((state) => state.soundEnabled);
   const vibrationEnabled = useSettingsStore((state) => state.vibrationEnabled);
   const effectIntensity = useSettingsStore((state) => state.effectIntensity);
+  const selectedThemeId = useSettingsStore((state) => state.selectedThemeId);
+  const theme = getBubbleTheme(selectedThemeId);
 
   return (
     <main
-      className={[
-        'min-h-screen text-ink transition-colors duration-300',
-        isFeverActive ? 'bg-[#fff8e8]' : 'bg-[#f7fbff]',
-      ].join(' ')}
+      className="min-h-screen text-ink transition-colors duration-300"
+      style={{
+        backgroundColor: isFeverActive
+          ? theme.colors.feverAppBackground
+          : theme.colors.appBackground,
+        color: theme.colors.appText,
+      }}
     >
       <section className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col px-4 py-4 sm:px-6">
         <header className="flex items-center justify-between gap-3">
@@ -39,7 +45,7 @@ export function PlayScreen() {
           </div>
           <button
             type="button"
-            className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold shadow-sm"
+            className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-ink shadow-sm"
             aria-expanded={isSettingsOpen}
             aria-controls="settings-panel"
             onClick={() => setIsSettingsOpen((current) => !current)}
@@ -61,10 +67,10 @@ export function PlayScreen() {
         <BubbleBoard />
 
         <footer className="mt-4 flex items-center justify-between gap-3">
-          <div className="rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm">
+          <div className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-ink shadow-sm">
             Combo {currentCombo}
           </div>
-          <div className="hidden rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm sm:block">
+          <div className="hidden rounded-md bg-white px-3 py-2 text-sm font-semibold text-ink shadow-sm sm:block">
             Best {maxCombo}
           </div>
           {isFeverActive && (
@@ -72,7 +78,7 @@ export function PlayScreen() {
               피버타임 {remainingFeverSeconds}s
             </div>
           )}
-          <div className="rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm">
+          <div className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-ink shadow-sm">
             Session {poppedCount}
           </div>
           <TodayFindsButton onClick={() => setIsCollectionOpen(true)} />
