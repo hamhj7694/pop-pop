@@ -198,3 +198,12 @@
 - 변경 파일: `src/features/reward/RewardRevealToast.tsx`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 보상 발견과 상자 개봉 안내를 콤보 피드백처럼 단일 `pointer-events-none` 상단 카드 레이어로 통일했다. 화면 전체를 덮던 박스 이펙트 레이어를 제거해 뽁뽁이 클릭/드래그 시작 지점과 겹치지 않게 했다.
+
+### 상단 알림 스택 통합
+
+- 완료일: 2026-07-07
+- Phase: Phase 8. 품질 안정화와 MVP 릴리스 준비
+- 관련 TODO: 콤보/보상/문구 알림을 공용 상단 스택으로 통합해 겹침 방지
+- 변경 파일: `src/features/play/PlayScreen.tsx`, `src/features/combo/ComboFeedback.tsx`, `src/features/reward/RewardRevealToast.tsx`, `src/features/settings/SettingsPanel.tsx`, `AGENTS.md`, `docs/interaction-rules.md`, `docs/reward-collection-rules.md`, `docs/quality-rules.md`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 콤보 알림과 보상/문구 알림이 각각 고정 위치를 잡지 않고 `PlayScreen`의 공용 상단 스택 안에서 순서대로 쌓이도록 변경했다. 설정 패널은 알림보다 높은 레이어로 올려 모바일에서 시각적으로 덮이지 않게 했다.

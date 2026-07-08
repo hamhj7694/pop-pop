@@ -35,7 +35,7 @@ export function RewardRevealToast() {
   }
 
   return (
-    <div className="pointer-events-none fixed left-1/2 top-20 z-20 flex w-[min(22rem,calc(100vw-2rem))] -translate-x-1/2 flex-col gap-2">
+    <div className="flex flex-col gap-2">
       <AnimatePresence>
         {revealedReward && (
           <motion.div

@@ -15,8 +15,10 @@
 | 제품 방향, 우선순위, MVP 범위 판단 | [docs/product-principles.md](./docs/product-principles.md) |
 | 메인 플레이 화면, 버블 배치, 클릭/터치/드래그 입력 | [docs/interaction-rules.md](./docs/interaction-rules.md) |
 | 사운드, 진동, 파티클, 애니메이션 | [docs/interaction-rules.md](./docs/interaction-rules.md), [docs/quality-rules.md](./docs/quality-rules.md) |
+| 콤보 알림, 보상 발견, 문구 토스트, 비간섭 알림 스택 | [docs/interaction-rules.md](./docs/interaction-rules.md), [docs/reward-collection-rules.md](./docs/reward-collection-rules.md), [docs/quality-rules.md](./docs/quality-rules.md) |
 | 랜덤 보상, 보상 낙하, 오늘 주운 것들, 도감 | [docs/reward-collection-rules.md](./docs/reward-collection-rules.md) |
 | 콤보, 콤보 종료, 피버타임, 피버 전용 보상 | [docs/reward-collection-rules.md](./docs/reward-collection-rules.md), [docs/interaction-rules.md](./docs/interaction-rules.md) |
+| 뽁뽁이 테마, 보상 콘텐츠 확장, 상자 개봉 이벤트 | [docs/development-plan.md](./docs/development-plan.md), [docs/interaction-rules.md](./docs/interaction-rules.md), [docs/reward-collection-rules.md](./docs/reward-collection-rules.md), [TODO.md](./TODO.md) |
 | React/Vite/TypeScript/Zustand 구조 | [docs/frontend-architecture-rules.md](./docs/frontend-architecture-rules.md) |
 | Howler.js, Vibration API, PostHog 이벤트 | [docs/frontend-architecture-rules.md](./docs/frontend-architecture-rules.md), [docs/quality-rules.md](./docs/quality-rules.md) |
 | Supabase, DB 스키마, Storage, RLS | [docs/data-backend-rules.md](./docs/data-backend-rules.md) |

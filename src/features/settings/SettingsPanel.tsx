@@ -50,7 +50,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   return (
     <aside
       id="settings-panel"
-      className="absolute right-4 top-20 z-20 w-[min(22rem,calc(100vw-2rem))] rounded-lg border border-slate-200 bg-white p-4 shadow-xl"
+      className="absolute right-4 top-20 z-30 w-[min(22rem,calc(100vw-2rem))] rounded-lg border border-slate-200 bg-white p-4 shadow-xl"
       role="dialog"
       aria-modal="false"
       aria-labelledby="settings-title"

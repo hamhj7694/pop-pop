@@ -37,7 +37,7 @@ export function ComboFeedback() {
   }
 
   return (
-    <div className="pointer-events-none fixed left-1/2 top-20 z-20 flex w-[min(22rem,calc(100vw-2rem))] -translate-x-1/2 flex-col gap-2">
+    <div className="flex flex-col gap-2">
       {lastReachedMilestone && (
         <div className="rounded-md border border-pop bg-white px-4 py-3 text-center shadow-lg">
           <p className="text-sm font-semibold text-pop">
