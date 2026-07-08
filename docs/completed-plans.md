@@ -207,3 +207,12 @@
 - 변경 파일: `src/features/play/PlayScreen.tsx`, `src/features/combo/ComboFeedback.tsx`, `src/features/reward/RewardRevealToast.tsx`, `src/features/settings/SettingsPanel.tsx`, `AGENTS.md`, `docs/interaction-rules.md`, `docs/reward-collection-rules.md`, `docs/quality-rules.md`, `TODO.md`
 - 검증: `npm.cmd run lint`, `npm.cmd run build`
 - 비고: 콤보 알림과 보상/문구 알림이 각각 고정 위치를 잡지 않고 `PlayScreen`의 공용 상단 스택 안에서 순서대로 쌓이도록 변경했다. 설정 패널은 알림보다 높은 레이어로 올려 모바일에서 시각적으로 덮이지 않게 했다.
+
+### 바닥 상자 드래그 줍기
+
+- 완료일: 2026-07-08
+- Phase: Phase 9. 테마와 콘텐츠 확장
+- 관련 TODO: 바닥에 쌓인 상자를 클릭뿐 아니라 드래그로도 주울 수 있게 구현, 상자 드래그 줍기 중 여러 상자가 지나갈 때 순차적으로 개봉되도록 처리, 상자 줍기와 뽁뽁이 드래그 입력의 우선순위와 충돌 방지 처리
+- 변경 파일: `src/features/reward/RewardDropLayer.tsx`, `TODO.md`
+- 검증: `npm.cmd run lint`, `npm.cmd run build`
+- 비고: 상자에서 시작한 포인터 입력만 줍기 모드로 처리한다. 드래그 중 포인터 아래의 상자를 찾아 한 번씩만 개봉하고, 뽁뽁이 보드에서 시작한 드래그는 기존 터뜨리기 흐름을 유지한다.
